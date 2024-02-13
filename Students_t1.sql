@@ -23,8 +23,7 @@ INNER JOIN [Training].[dbo].[district] d ON d.[districtID] = s.[districtID] /*to
 INNER JOIN [Training].[dbo].[Contact] c ON c.[personID] = s.[personID] /*to get student email*/
 INNER JOIN [Training].[dbo].[UserAccount] u ON u.[personID] = s.[personID] /*to get student username*/
 
-WHERE
-/* Make sure it's a student with a UID who's active in an active calendar */
+WHERE /* Make sure it's a student with a UID who's active in an active calendar and isn't state excluded */
 s.stateID is not null
 AND s.activeYear=1
 AND s.endStatus is null
