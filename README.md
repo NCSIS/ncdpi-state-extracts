@@ -23,7 +23,7 @@ Each student record has a field that is a list of their teachers' UIDs separated
 
 To be written + need to consult with IDAuto. The purpose of this file would be to grab employee emails out of the SIS. Not sure what the resulting file would be exactly; likely just UID and email address. This would be an addendum to the current SAS jobs for staff.
 
-As an aside: this is one job that does NOT work well at SAS. What if the SIS was the primary source instead of Staff UID? I'd love to get this job away from SAS completely simply because it doesn't entirely work + they aren't capable of determining root cause.
+As an aside: This is a job that is NOT working well at SAS. Part of the process to pull employee emails into this file is broken + SAS is not capable of helping us monitor or determine why. Looking forward, maybe the best answer is to position the SIS as the authoritative source for downstream systems. This will still require a valid Staff UID in that system as controlled by HR, but it removes a pain point and reduces complexity.
 
 ## Schoolnet Roles
 

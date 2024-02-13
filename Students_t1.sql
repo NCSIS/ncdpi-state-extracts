@@ -11,7 +11,7 @@ d.[name] as LEA_DESC,
 s.[schoolID] as SCHOOL_CODE,
 sch.[name] as SCHOOL_DESC,
 c.[email] as EMAIL,
-NULL as TEACHER_STAFF_ID,
+'To do soon :)' as TEACHER_STAFF_ID,
 CASE
     WHEN c.[email] is NULL THEN u.[username]
     ELSE c.[email]
