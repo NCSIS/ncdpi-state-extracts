@@ -13,4 +13,4 @@ NULL as LEA_DESC,
 NULL as EMAIL,
 NULL as TEACHER_STAFF_ID,
 NULL as LEA_ID
-FROM [Training].[dbo].[student] WHERE stateID is not null AND activeYear=1 AND endStatus is null AND enrollmentStateExclude=0
+FROM [Training].[dbo].[student] WHERE stateID is not null AND activeYear=1 AND endStatus is null AND enrollmentStateExclude=0;
