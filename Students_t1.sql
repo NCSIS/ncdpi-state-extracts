@@ -20,7 +20,7 @@ INNER JOIN [Training].[dbo].[district] d ON d.[districtID] = s.[districtID]
 INNER JOIN [Training].[dbo].[Contact] c ON c.[personID] = s.[personID]
 
 WHERE
-/* Make sure it's an active student who isn't exited in the active calendar */
+/* Make sure it's a student with a UID who's active in an active calendar */
 s.stateID is not null
 AND s.activeYear=1
 AND s.endStatus is null
