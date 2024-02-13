@@ -19,6 +19,8 @@ This would opt-in everyone to alias ID. But honestly, I don't think that's a pro
 
 Each student record has a field that is a list of their teachers' UIDs separated by double colons. I have not yet been successful in making this work. Basically, we will need to use the student personID to look up their sectionIDs in the roster table. For each sectionID, look in the sections table to get the teacherPersonID. Finally, for each teacherPersonID, search the Person table by ID to get the staffStateID.
 
+LISTAGG plus specifying distinct possibly? What I was doing before except do a group by student id.
+
 ## Staff
 
 To be written + need to consult with IDAuto. The purpose of this file would be to grab employee emails out of the SIS. Not sure what the resulting file would be exactly; likely just UID and email address. This would be an addendum to the current SAS jobs for staff.
