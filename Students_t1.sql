@@ -12,12 +12,16 @@ s.[schoolID] as SCHOOL_CODE,
 sch.[name] as SCHOOL_DESC,
 c.[email] as EMAIL,
 NULL as TEACHER_STAFF_ID,
-c.[email] as LEA_ID /*alias ID*/
+CASE
+    WHEN c.[email] is NULL THEN u.[username]
+    ELSE c.[email]
+END as LEA_ID /*alias ID -- pulls email or username if null*/
 
 FROM [Training].[dbo].[student] s
-INNER JOIN [Training].[dbo].[school] sch ON sch.[schoolID] = s.[schoolID]
-INNER JOIN [Training].[dbo].[district] d ON d.[districtID] = s.[districtID]
-INNER JOIN [Training].[dbo].[Contact] c ON c.[personID] = s.[personID]
+INNER JOIN [Training].[dbo].[school] sch ON sch.[schoolID] = s.[schoolID] /*to get school name*/
+INNER JOIN [Training].[dbo].[district] d ON d.[districtID] = s.[districtID] /*to get district name*/
+INNER JOIN [Training].[dbo].[Contact] c ON c.[personID] = s.[personID] /*to get student email*/
+INNER JOIN [Training].[dbo].[UserAccount] u ON u.[personID] = s.[personID] /*to get student username*/
 
 WHERE
 /* Make sure it's a student with a UID who's active in an active calendar */
