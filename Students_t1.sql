@@ -4,7 +4,7 @@ SELECT
 [firstName] as FIRST_NAME,
 [middleName] as MIDDLE_NAME,
 [suffix] as NAME_SUFFIX,
-CAST([birthDate] as DATE) as BIRTH_DATE,
+CONVERT(VARCHAR(8), [birthdate], 112) as BIRTH_DATE,
 [stateGrade] as GRADE,
 [districtID] as LEA_CODE,
 NULL as LEA_DESC,
