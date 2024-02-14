@@ -15,7 +15,8 @@ c.[email] as EMAIL,
 CASE
     WHEN c.[email] is NULL THEN u.[username]
     ELSE c.[email]
-END as LEA_ID /*alias ID -- pulls email or username if null*/
+END as LEA_ID, /*alias ID -- pulls email or username if null*/
+CONVERT(VARCHAR(8), s.[modifiedDate], 112) as MOD_DATE
 
 FROM [Training].[dbo].[student] s
 INNER JOIN [Training].[dbo].[school] sch ON sch.[schoolID] = s.[schoolID] /*to get school name*/
