@@ -29,4 +29,4 @@ As an aside: This is a job that is NOT working well at SAS. Part of the process 
 
 ## Schoolnet Roles
 
-Need to determine where Schoolnet roles will live / whether we need to find a home for them in IC + write a script to send to IAM.
+Pearson to confirm the data flow / logic. But it sounds like these will live in Infinite Campus + that IC will assist with this extract.
