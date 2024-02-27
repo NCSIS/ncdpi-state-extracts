@@ -17,9 +17,9 @@ This would opt-in everyone to alias ID. But honestly, I don't think that's a pro
 
 #### Multivalued Teacher UID Field
 
-Each student record has a field that is a list of their teachers' UIDs separated by double colons. I have not yet been successful in making this work. Basically, we will need to use the student personID to look up their sectionIDs in the roster table. For each sectionID, look in the sections table to get the teacherPersonID. Finally, for each teacherPersonID, search the Person table by ID to get the staffStateID.
+Each student record has a field that is a list of their teachers' UIDs separated by double colons. We use the student personID to look up their sectionIDs in the roster table. For each sectionID, look in the sections table to get the teacherPersonID. Finally, for each teacherPersonID, search the Person table by ID to get the staffStateID.
 
-LISTAGG plus specifying distinct possibly? What I was doing before except do a group by student id.
+We may be pulling teachers from concluded section enrollments. Need to verify once we can see real data in the database.
 
 ## Staff
 
