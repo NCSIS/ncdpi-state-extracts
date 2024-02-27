@@ -33,6 +33,14 @@ WHERE
     AND s.activeYear=1 /* QA: Current year */
     AND s.endStatus is null /* QA: Not exited */
     AND s.enrollmentStateExclude=0 /* QA: State included */
+    AND (
+        CAST(r.startDate AS DATE) <= CAST(CURRENT_TIMESTAMP AS DATE)
+        OR r.startDate IS NULL
+        ) /* started or non-dated roster enrollments only */
+    AND (
+        CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
+        OR r.endDate IS NULL
+        ) /* non-ended or non-dated roster enrollments only */
 
 GROUP BY
     s.[stateID],
