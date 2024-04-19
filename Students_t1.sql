@@ -13,7 +13,7 @@ SELECT
     c.[email] as EMAIL,
     /*
     Available in MSSQL 2017 as an alternative...
-    STRING_AGG(p.[staffStateID],'::') p.[staffStateID] as TEACHER_STAFF_ID,
+    STRING_AGG(p.[staffStateID],'::') as TEACHER_STAFF_ID,
     */
     TEACHER_STAFF_ID = STUFF(
         (
@@ -58,7 +58,7 @@ WHERE
     AND s.enrollmentStateExclude=0 /* QA: State included */
     /*
     These lines would be for the STRING_AGG function...
-    
+
     AND (
         CAST(r.startDate AS DATE) <= CAST(CURRENT_TIMESTAMP AS DATE)
         ) /* started roster enrollments only */
