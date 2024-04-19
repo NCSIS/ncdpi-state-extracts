@@ -3,23 +3,26 @@
 
 ## Students_t1.sql
 
-This is an initial attempt of a script to pull student data from IC:State Edition in the same format as the existing student source data file.
+This is a script to pull student data from IC:State Edition in the same format as the existing student source data file. This has been developed against ncse-test.infinitecampus.org.
 
 ### Random Notes
 
+#### Student Emails
+Need to find these in the State Edition database! This is a __critical__ issue.
+
 #### PSU and School Codes and Names
 
-These are being pulled out of the IC database as-is. Need to determine whether they'll be stored there as the standard EDDIE values or whether it'll be something different like with PS. If the data is in IC as it is in EDDIE, this script no longer needs to consult EDDIE. Opportunity to simplify.
+These are being pulled out of the IC database as-is. Since we have proper state codes in IC, we don't need to consult EDDIE.
 
 #### Alias ID
 
-This would opt-in everyone to alias ID. But honestly, I don't think that's a problem and it would remove a ton of complexity. Alias ID will fill with student emails. If student email is null, it'll fill with the IC username value.
+This would opt-in everyone to alias ID. But honestly, I don't think that's a problem and it would remove some complexity. Alias ID will fill with student emails.
 
 #### Multivalued Teacher UID Field
 
 Each student record has a field that is a list of their teachers' UIDs separated by double colons. We use the student personID to look up their sectionIDs in the roster table. For each sectionID, look in the sections table to get the teacherPersonID. Finally, for each teacherPersonID, search the Person table by ID to get the staffStateID.
 
-We may be pulling teachers from concluded section enrollments. Need to verify once we can see real data in the database.
+This is easy with STRING_AGG in MSSQL 2017+ as was available in the IC Training site. However, our staging site is running an earlier version. As a result, the script has to use STUFF with a nested query to accomplish this.
 
 ## Staff
 
