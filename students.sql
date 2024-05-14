@@ -41,10 +41,11 @@ FROM
     JOIN [Contact] c ON c.[personID] = s.[personID] /*to get student email*/
 
 WHERE
-    s.stateID is not null /* QA: UID populated */
-    AND s.activeYear=1 /* QA: Current year */
-    AND s.endStatus is null /* QA: Not exited */
-    AND s.enrollmentStateExclude=0 /* QA: State included */
+    s.[stateID] is not null /* JM: UID populated */
+    AND s.[enrollmentStateExclude]=0 /* JM: not state excluded */
+    AND s.[startDate] <= getdate() /* contractor: start date is today or prior */
+    AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) /* contractor: end date is null or future */
+    AND s.[serviceType] = 'P' /* contractor: student service type is primary */
 
 GROUP BY
     s.[stateID],

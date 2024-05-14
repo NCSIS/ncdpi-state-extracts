@@ -1,9 +1,17 @@
 
 # Identity and Access Management SQL Scripts for Infinite Campus
 
-## Students_t1.sql
+## students.sql
 
 This is a script to pull student data from IC:State Edition in the same format as the existing student source data file. This has been developed against ncse-test.infinitecampus.org.
+
+## staff_email.sql
+
+This script pulls the UID and email address of all currently active employees.
+
+## parents.sql
+
+This script pulls active login accounts for parents.
 
 ### Random Notes
 
