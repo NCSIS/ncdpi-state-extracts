@@ -31,7 +31,7 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    c.[email] as LOCAL_ID, /*alias ID*/
+    c.[email] as ALIAS_ID, /*alias ID*/
     CONVERT(VARCHAR(8), s.[modifiedDate], 112) as MOD_DATE
 
 FROM

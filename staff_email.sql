@@ -1,5 +1,6 @@
 SELECT
     sm.[staffStateID] as STAFF_UID,
+    LEFT(sm.[schoolNumber],3) as PSU_CODE,
     c.[email] as EMAIL,
     c.[email] as ALIAS_ID
 
