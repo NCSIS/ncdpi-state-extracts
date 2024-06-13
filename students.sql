@@ -27,6 +27,7 @@ SELECT
                 ) /* started roster enrollments only */
                 AND (
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
+                    OR r.endDate IS NULL
                 ) /* non-ended roster enrollments only */
             FOR XML PATH ('')
         ), 1, 2, ''
@@ -43,7 +44,7 @@ FROM
 WHERE
     s.[stateID] is not null /* JM: UID populated */
     AND s.[enrollmentStateExclude]=0 /* JM: not state excluded */
-    AND s.[startDate] <= getdate() /* contractor: start date is today or prior */
+    /*AND s.[startDate] <= getdate() /* contractor: start date is today or prior */ -- actually, IAM may not care if it's started. If it's in the students view, it's active and we want it. */
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) /* contractor: end date is null or future */
     AND s.[serviceType] = 'P' /* contractor: student service type is primary */
 
