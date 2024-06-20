@@ -1,4 +1,4 @@
-SELECT
+SELECT TOP 100
     s.[stateID] as PUPIL_NUMBER,
     s.[lastName] as LAST_NAME,
     s.[firstName] as FIRST_NAME,
@@ -10,7 +10,15 @@ SELECT
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
     sch.[name] as SCHOOL_DESC,
-    c.[email] as EMAIL,
+    (
+        SELECT DISTINCT
+            sc.[email]
+        FROM
+            [StudentContact] sc
+        WHERE
+            sc.[personID] = s.[personID]
+            AND sc.[relationship] = 'Self'
+    ) as EMAIL,
     STUFF(
         (
             SELECT DISTINCT
@@ -32,14 +40,21 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    c.[email] as ALIAS_ID, /*alias ID*/
+    (
+        SELECT DISTINCT
+            sc.[email]
+        FROM
+            [StudentContact] sc
+        WHERE
+            sc.[personID] = s.[personID]
+            AND sc.[relationship] = 'Self'
+    ) as ALIAS_ID, /*alias ID*/
     CONVERT(VARCHAR(8), s.[modifiedDate], 112) as MOD_DATE
 
 FROM
     [student] s /*student view*/
     JOIN [school] sch ON sch.[schoolID] = s.[schoolID] /*to get school num and name*/
     JOIN [district] d ON d.[districtID] = s.[districtID] /*to get district num and name*/
-    JOIN [Contact] c ON c.[personID] = s.[personID] /*to get student email*/
 
 WHERE
     s.[stateID] is not null /* JM: UID populated */
@@ -60,5 +75,5 @@ GROUP BY
     d.[name],
     sch.[number],
     sch.[name],
-    c.[email],
-    s.[modifiedDate]
+    s.[modifiedDate],
+    s.[personID]
