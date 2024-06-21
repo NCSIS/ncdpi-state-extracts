@@ -4,7 +4,7 @@ SELECT
     s.[firstName] as FIRST_NAME,
     s.[middleName] as MIDDLE_NAME,
     s.[suffix] as NAME_SUFFIX,
-    FORMAT(s.[birthdate],'yyyyMMdd') as BIRTH_DATE,
+    FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
     s.[stateGrade] as GRADE,
     d.[number] as PSU_CODE,
     d.[name] as PSU_DESC,
@@ -33,7 +33,7 @@ SELECT
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
     sc.[email] as ALIAS_ID,
-    FORMAT(s.[modifiedDate],'yyyyMMdd') as MOD_DATE
+    FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
 
 FROM
     [student] s --student view
