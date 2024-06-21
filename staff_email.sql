@@ -1,17 +1,16 @@
-SELECT
+SELECT DISTINCT
     sm.[staffStateID] as STAFF_UID,
     LEFT(sm.[schoolNumber],3) as PSU_CODE,
-    c.[email] as EMAIL,
-    c.[email] as ALIAS_ID
+    sc.[email] as EMAIL,
+    sc.[email] as ALIAS_ID
 
 FROM
     [staffMember] sm
-    JOIN [Contact] c ON c.[personID] = sm.[personID]
+    LEFT OUTER JOIN [StudentContact] sc ON sc.[personID] = sm.[personID] AND sc.[relationship] = 'Self'
 
 WHERE
-    sm.[staffStateID] IS NOT NULL /* JM: UID populated */
-    AND c.[email] IS NOT NULL /* JM: email populated */
-    AND c.[email] NOT LIKE '%dpi.nc.gov' /* JM: email not NCDPI */
-    AND c.[email] NOT LIKE '%ncpublicschools.gov' /* JM: email not NCDPI */
-    AND sm.[startDate] <= getdate() /* contractor: start date is today or prior */
-    AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) /* contractor: end date is null or future */
+    LEN(sm.[staffStateID]) = 10 --UID length is 10
+    AND TRY_CONVERT(int, sm.[staffStateID]) IS NOT NULL --UID is numeric
+    AND sc.[email] IS NOT NULL --email populated
+    AND sm.[startDate] <= getdate() --start date is today or prior
+    AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future

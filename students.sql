@@ -1,67 +1,53 @@
-SELECT TOP 100
+SELECT
     s.[stateID] as PUPIL_NUMBER,
     s.[lastName] as LAST_NAME,
     s.[firstName] as FIRST_NAME,
     s.[middleName] as MIDDLE_NAME,
     s.[suffix] as NAME_SUFFIX,
-    CONVERT(VARCHAR(8), s.[birthdate], 112) as BIRTH_DATE,
+    FORMAT(s.[birthdate],'yyyyMMdd') as BIRTH_DATE,
     s.[stateGrade] as GRADE,
     d.[number] as PSU_CODE,
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
     sch.[name] as SCHOOL_DESC,
-    (
-        SELECT DISTINCT
-            sc.[email]
-        FROM
-            [StudentContact] sc
-        WHERE
-            sc.[personID] = s.[personID]
-            AND sc.[relationship] = 'Self'
-    ) as EMAIL,
+    sc.[email] as EMAIL,
     STUFF(
         (
             SELECT DISTINCT
                 '::' + p.[staffStateID]
             FROM
                 [student] s2
-                JOIN [Roster] r ON r.[personID]=s2.[personID]
-                JOIN [Section] sec ON sec.[sectionID]=r.[sectionID]
-                JOIN [Person] p ON sec.[teacherPersonID] = p.[personID]
+                LEFT OUTER JOIN [Roster] r ON r.[personID]=s2.[personID]
+                LEFT OUTER JOIN [Section] sec ON sec.[sectionID]=r.[sectionID]
+                LEFT OUTER JOIN [Person] p ON sec.[teacherPersonID] = p.[personID]
             WHERE
                 s2.[stateID] = s.[stateID]
                 AND (
                     CAST(r.startDate AS DATE) <= CAST(CURRENT_TIMESTAMP AS DATE)
-                ) /* started roster enrollments only */
+                ) --started roster enrollments only
                 AND (
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                     OR r.endDate IS NULL
-                ) /* non-ended roster enrollments only */
+                ) --non-ended roster enrollments only
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    (
-        SELECT DISTINCT
-            sc.[email]
-        FROM
-            [StudentContact] sc
-        WHERE
-            sc.[personID] = s.[personID]
-            AND sc.[relationship] = 'Self'
-    ) as ALIAS_ID, /*alias ID*/
-    CONVERT(VARCHAR(8), s.[modifiedDate], 112) as MOD_DATE
+    sc.[email] as ALIAS_ID,
+    FORMAT(s.[modifiedDate],'yyyyMMdd') as MOD_DATE
 
 FROM
-    [student] s /*student view*/
-    JOIN [school] sch ON sch.[schoolID] = s.[schoolID] /*to get school num and name*/
-    JOIN [district] d ON d.[districtID] = s.[districtID] /*to get district num and name*/
+    [student] s --student view
+    LEFT OUTER JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
+    LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get district num and name
+    LEFT OUTER JOIN [StudentContact] sc ON sc.[personID] = s.[personID] AND sc.[relationship] = 'Self' --to get student email
 
 WHERE
-    s.[stateID] is not null /* JM: UID populated */
-    AND s.[enrollmentStateExclude]=0 /* JM: not state excluded */
-    /*AND s.[startDate] <= getdate() /* contractor: start date is today or prior */ -- actually, IAM may not care if it's started. If it's in the students view, it's active and we want it. */
-    AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) /* contractor: end date is null or future */
-    AND s.[serviceType] = 'P' /* contractor: student service type is primary */
+    s.[stateID] is not null --UID populated
+    AND s.[enrollmentStateExclude]=0 --not state excluded
+    --AND s.[startDate] <= getdate() --start date is today or prior
+    AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
+    AND s.[activeYear] = 1 --is an active enrollment
+    AND s.[serviceType] = 'P' --student service type is primary
 
 GROUP BY
     s.[stateID],
@@ -75,5 +61,5 @@ GROUP BY
     d.[name],
     sch.[number],
     sch.[name],
-    s.[modifiedDate],
-    s.[personID]
+    sc.[email],
+    s.[modifiedDate]
