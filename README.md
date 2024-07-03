@@ -18,7 +18,7 @@ This script pulls the UID and email address of all currently active employees.
 ### Random Notes
 
 #### Email Addresses
-Email addresses in the State Edition database are stored in the __StudentContact__ table. This was already the case for staff emails. Student emails will be added shortly by Infinite Campus to meet NCDPI requirements.
+Email addresses in the State Edition database are stored in the __Contact__ table for students and in the __StudentContact__ table for staff. The Contact table can be a simple join on personID. The StudentContact table needs a join on personID and a relationship value of "self."
 
 This value also fills the Alias ID field for Students and Staff.
 

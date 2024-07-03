@@ -10,7 +10,7 @@ SELECT
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
     sch.[name] as SCHOOL_DESC,
-    sc.[email] as EMAIL,
+    c.[email] as EMAIL,
     STUFF(
         (
             SELECT DISTINCT
@@ -32,14 +32,14 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    sc.[email] as ALIAS_ID,
+    c.[email] as ALIAS_ID,
     FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
 
 FROM
     [student] s --student view
     LEFT OUTER JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
     LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get district num and name
-    LEFT OUTER JOIN [StudentContact] sc ON sc.[personID] = s.[personID] AND sc.[relationship] = 'Self' --to get student email
+    LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] --to get student email
 
 WHERE
     s.[stateID] is not null --UID populated
@@ -61,5 +61,5 @@ GROUP BY
     d.[name],
     sch.[number],
     sch.[name],
-    sc.[email],
+    c.[email],
     s.[modifiedDate]
