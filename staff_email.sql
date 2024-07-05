@@ -1,6 +1,6 @@
 SELECT DISTINCT
     sm.[staffStateID] as STAFF_UID,
-    LEFT(sm.[schoolNumber],3) as PSU_CODE,
+    sm.[schoolNumber] as SCHOOL_CODE,
     sc.[email] as EMAIL,
     sc.[email] as ALIAS_ID
 
