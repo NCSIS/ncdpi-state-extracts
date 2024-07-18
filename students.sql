@@ -5,7 +5,10 @@ SELECT
     s.[middleName] as MIDDLE_NAME,
     s.[suffix] as NAME_SUFFIX,
     FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
-    s.[stateGrade] as GRADE,
+    CASE WHEN
+        LEFT(s.[stateGrade],1)='0' THEN RIGHT(s.[stateGrade],1)
+        ELSE s.[stateGrade]
+    END as GRADE,
     d.[number] as PSU_CODE,
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
@@ -29,6 +32,8 @@ SELECT
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                     OR r.endDate IS NULL
                 ) --non-ended roster enrollments only
+                AND isNumeric(p.[staffStateID])=1 --Staff UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
+                AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
@@ -42,9 +47,9 @@ FROM
     LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] --to get student email
 
 WHERE
-    isNumeric(s.[stateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
+    TRY_CONVERT(int, s.[stateID]) IS NOT NULL --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
     AND len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
-    AND s.[enrollmentStateExclude]=0 --not state excluded
+    AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
     AND s.[serviceType] = 'P' --student service type is primary
