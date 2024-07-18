@@ -6,7 +6,7 @@ SELECT
     s.[suffix] as NAME_SUFFIX,
     FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
     CASE WHEN
-        LEFT(s.[stateGrade],1)='0' THEN RIGHT(s.[stateGrade],1)
+        LEFT(s.[stateGrade],1)='0' THEN RIGHT(s.[stateGrade],1) --IDAuto expects an integer, so we can at least make numbers be integers...
         ELSE s.[stateGrade]
     END as GRADE,
     d.[number] as PSU_CODE,
@@ -32,7 +32,7 @@ SELECT
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                     OR r.endDate IS NULL
                 ) --non-ended roster enrollments only
-                AND isNumeric(p.[staffStateID])=1 --Staff UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
+                AND TRY_CONVERT(int, sm.[staffStateID]) IS NOT NULL --UID is numeric
                 AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
             FOR XML PATH ('')
         ), 1, 2, ''
