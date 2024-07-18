@@ -32,7 +32,7 @@ SELECT
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                     OR r.endDate IS NULL
                 ) --non-ended roster enrollments only
-                AND TRY_CONVERT(int, sm.[staffStateID]) IS NOT NULL --UID is numeric
+                AND TRY_CONVERT(int, p.[staffStateID]) IS NOT NULL --UID is numeric
                 AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
             FOR XML PATH ('')
         ), 1, 2, ''
