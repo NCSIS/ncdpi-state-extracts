@@ -53,6 +53,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Teacher and Section Level Data%'
 
     UNION ALL
@@ -68,6 +69,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Aggregate Level Data%'
 
     UNION ALL
@@ -83,6 +85,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Assessment Management%'
 
     UNION ALL
@@ -98,6 +101,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Curriculum Management%'
 
     UNION ALL
@@ -113,6 +117,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Teacher Lesson Planner%'
 
     UNION ALL
@@ -128,6 +133,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Test Item Administrator%'
 
     UNION ALL
@@ -143,6 +149,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Report Manage%'
 
     UNION ALL
@@ -158,6 +165,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Approve Instructional Materials%'
 
     UNION ALL
@@ -173,6 +181,7 @@ from (
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
         AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 1
         AND se.[schoolnetAddRoles] like '%Access to Approve Assessment Items%') ssnr
 WHERE STAFF_UID is not null
 ORDER BY STAFF_UID, ROLE_NUM;
