@@ -11,7 +11,7 @@ from (
     WHERE
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
-        AND se.[schoolnetRole]=1
+        AND se.[schoolnetRole]=2
 
     UNION ALL
     -- now Teacher roles...
@@ -24,7 +24,7 @@ from (
     WHERE
         isNumeric(sm.[staffStateID])=1 --UID is numeric. Because a blank UID isn't actually null for some reason. Idk. Whatever.
         AND len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
-        AND se.[schoolnetRole]=2
+        AND se.[schoolnetRole]=1
 
     UNION ALL
 
