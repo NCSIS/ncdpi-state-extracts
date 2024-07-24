@@ -5,8 +5,22 @@ SELECT
     s.[middleName] as MIDDLE_NAME,
     s.[suffix] as NAME_SUFFIX,
     FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
-    CASE WHEN
-        LEFT(s.[stateGrade],1)='0' THEN RIGHT(s.[stateGrade],1) --IDAuto expects an integer, so we can at least make numbers be integers...
+    CASE s.[stateGrade] 
+        WHEN 'XG' THEN '-9'
+        WHEN 'UG' THEN '-7'
+        WHEN 'IT' THEN '-3'
+        WHEN 'PR' THEN '-2'
+        WHEN 'PK' THEN '-1'
+        WHEN 'KG' THEN '0'
+        WHEN '01' THEN '1'
+        WHEN '02' THEN '2'
+        WHEN '03' THEN '3'
+        WHEN '04' THEN '4'
+        WHEN '05' THEN '5'
+        WHEN '06' THEN '6'
+        WHEN '07' THEN '7'
+        WHEN '08' THEN '8'
+        WHEN '09' THEN '9'
         ELSE s.[stateGrade]
     END as GRADE,
     d.[number] as PSU_CODE,
@@ -52,6 +66,7 @@ WHERE
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
+    AND s.[noShow] = 0 --isn't a no-show
     AND s.[serviceType] = 'P' --student service type is primary
 
 GROUP BY
