@@ -11,14 +11,17 @@ This script pulls student account data in the same format as the old student ext
 
 This script assembles student Schoolnet roles based off their currently enrolled school.
 
-
 ## staff_email.sql
 
 This script pulls the UID and email address of all currently active employees.
 
+## staff_sn_roles.sql
+
+This script uses a series of nested queries to pull out assigned staff Schoolnet roles from the custom fields on the Infinite Campus District Assignments screen.
+
 ## staff_sn_roles_TEMP-JM.sql
 
-This script assembles teacher Schoolnet roles based off their District Assignments where the "Teacher" box is checked. __This is not workable long-term as it cannot support "Leadership" or "Staff" primary roles nor can it support any additional roles.__
+This script was a temporary solution to assemble teacher Schoolnet roles based off their District Assignments where the "Teacher" box is checked.
 
 ## parents.sql
 
@@ -27,7 +30,7 @@ This script assembles teacher Schoolnet roles based off their District Assignmen
 ## Random Notes
 
 ### Email Addresses
-Email addresses in the State Edition database are stored in the __Contact__ table for students and in the __StudentContact__ table for staff. The Contact table can be a simple join on personID. The StudentContact table needs a join on personID and a relationship value of "self."
+Email addresses in the State Edition database are stored in the __Contact__ table for students and in the __StudentContact__ table for staff. The Contact table can be a simple join on personID. The StudentContact table needs a join on personID and a relationship value of "self." At the District Edition level, all emails are in __StudentContact__ with a relationship value of "self."
 
 This value also fills the Alias ID field for Students and Staff.
 
@@ -41,8 +44,4 @@ Each student record has a field that is a list of their teachers' UIDs separated
 
 ### Staff Email File
 
-This will be a NEW file for IDAuto. Staff will be initially provisioned by the existing Staff jobs at SAS. The data source for those jobs is Staff UID. Nothing about that will change. This new file will serve to feed employee emails from Infinite Campus to IDAuto.
-
-### Schoolnet Roles
-
-IC will build this extract as part of the Schoolnet integration work.
+This will be a NEW file for IDAuto. Staff will be initially provisioned by the existing Staff jobs at SAS. The data source for those jobs is Staff UID. Nothing about that will change. This new file serves only to feed employee emails from Infinite Campus to IDAuto.
