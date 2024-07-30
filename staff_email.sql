@@ -10,7 +10,6 @@ FROM
 
 WHERE
     LEN(sm.[staffStateID]) = 10 --UID length is 10
-    AND TRY_CONVERT(int, sm.[staffStateID]) IS NOT NULL --UID is numeric
     AND sc.[email] IS NOT NULL --email populated
     AND sm.[startDate] <= getdate() --start date is today or prior
     AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
