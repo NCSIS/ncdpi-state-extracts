@@ -46,7 +46,7 @@ SELECT
                     CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                     OR r.endDate IS NULL
                 ) --non-ended roster enrollments only
-                AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+                AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
@@ -60,7 +60,7 @@ FROM
     LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] --to get student email
 
 WHERE
-    len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+    len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment

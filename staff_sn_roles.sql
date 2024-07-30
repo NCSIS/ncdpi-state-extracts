@@ -9,7 +9,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole]=2
 
     UNION ALL
@@ -21,7 +21,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole]=1
 
     UNION ALL
@@ -34,7 +34,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole]=3
 
     UNION ALL
@@ -47,7 +47,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Teacher and Section Level Data%'
@@ -62,7 +62,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Aggregate Level Data%'
@@ -77,7 +77,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Assessment Management%'
@@ -92,7 +92,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Curriculum Management%'
@@ -107,7 +107,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Teacher Lesson Planner%'
@@ -122,7 +122,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Test Item Administrator%'
@@ -137,7 +137,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Report Manage%'
@@ -152,7 +152,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Approve Instructional Materials%'
@@ -167,7 +167,7 @@ from (
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
-        len(sm.[staffStateID])=10 --UID is 10 characters in length. Because why not?! If a null isn't null, I'm making no more assumptions.
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Approve Assessment Items%') ssnr
