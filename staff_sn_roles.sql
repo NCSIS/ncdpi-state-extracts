@@ -129,6 +129,21 @@ from (
 
     UNION ALL
 
+    -- now Access for Teachers to Share Assessments roles...
+    SELECT DISTINCT
+        sm.[staffStateID] as STAFF_UID,
+        se.[SchoolNumber] + ':Access for Teachers to Share Assessments' as SCHOOLNET_ROLE,
+        17 as ROLE_NUM
+    FROM [v_SchoolEmployment] se
+        LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
+    WHERE
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
+        AND se.[schoolnetRole] is not null
+        AND se.[schoolnetRole] != 2
+        AND se.[schoolnetAddRoles] like '%Access for Teachers to Share Assessments%'
+
+    UNION ALL
+
     -- now Access to Report Manage roles...
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
