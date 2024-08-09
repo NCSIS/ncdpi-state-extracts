@@ -5,7 +5,7 @@ from (
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         se.[SchoolNumber] + ':Leadership' as SCHOOLNET_ROLE,
-        1 as ROLE_NUM
+        01 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
@@ -17,7 +17,7 @@ from (
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         se.[SchoolNumber] + ':Teacher' as SCHOOLNET_ROLE,
-        2 as ROLE_NUM
+        02 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
@@ -30,7 +30,7 @@ from (
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         se.[SchoolNumber] + ':Staff' as SCHOOLNET_ROLE,
-        3 as ROLE_NUM
+        03 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
@@ -147,15 +147,15 @@ from (
     -- now Access to Report Manage roles...
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
-        se.[SchoolNumber] + ':Access to Report Manage' as SCHOOLNET_ROLE,
-        17 as ROLE_NUM
+        se.[SchoolNumber] + ':Access to Report Manager' as SCHOOLNET_ROLE,
+        18 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
-        AND se.[schoolnetAddRoles] like '%Access to Report Manage%'
+        AND se.[schoolnetAddRoles] like '%Access to Report Manage%' --this is a typo in IC
 
     UNION ALL
 
@@ -163,7 +163,7 @@ from (
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         se.[SchoolNumber] + ':Access to Approve Instructional Materials' as SCHOOLNET_ROLE,
-        18 as ROLE_NUM
+        19 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
@@ -178,7 +178,7 @@ from (
     SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         se.[SchoolNumber] + ':Access to Approve Assessment Items' as SCHOOLNET_ROLE,
-        19 as ROLE_NUM
+        20 as ROLE_NUM
     FROM [v_SchoolEmployment] se
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
