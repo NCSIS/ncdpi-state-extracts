@@ -2,8 +2,7 @@ SELECT DISTINCT
     sm.[staffStateID] as STAFF_UID,
     sm.[schoolNumber] as SCHOOL_CODE,
     sc.[email] as EMAIL,
-    sc.[email] as ALIAS_ID,
-    sm.[personID] as PERSON_ID
+    sc.[email] as ALIAS_ID
 
 FROM
     [staffMember] sm
