@@ -64,8 +64,8 @@ WHERE
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
-    AND s.[noShow] = 0 --isn't a no-show
-    AND s.[serviceType] = 'P' --student service type is primary
+    --AND s.[noShow] = 0 --isn't a no-show, removed because the students view already filters this
+    --AND s.[serviceType] = 'P' --student service type is primary, removed due to request from Rutherford
 
 GROUP BY
     s.[stateID],
