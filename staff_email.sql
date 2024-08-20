@@ -14,3 +14,4 @@ WHERE
     AND sm.[startDate] <= getdate() --start date is today or prior
     AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
     AND sc.[districtID] = (SELECT [school].[districtID] from [school] where [school].[schoolID] = sm.[schoolID]) --only give us the contacts from the active PSU
+    AND sc.[contactID] = (select max([contactID]) from [StudentContact] where [personID]=sm.[personID]) --only get the max contact ID from the active PSU
