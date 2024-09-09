@@ -1,6 +1,9 @@
 SELECT DISTINCT
     sm.[staffStateID] as STAFF_UID,
-    sm.[schoolNumber] as SCHOOL_CODE,
+    CASE
+        WHEN RIGHT(sm.[schoolNumber],3)='810' THEN LEFT(sm.[schoolNumber],3) + '000'
+        ELSE sm.[schoolNumber]
+    END as SCHOOL_CODE,
     sc.[email] as EMAIL,
     sc.[email] as ALIAS_ID
 
