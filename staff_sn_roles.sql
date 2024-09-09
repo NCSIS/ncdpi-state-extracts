@@ -178,7 +178,6 @@ from (
         AND sm.[startDate] <= getdate() --start date is today or prior
         AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
-        AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Test Item Administrator%'
 
     UNION ALL
