@@ -33,12 +33,11 @@ SELECT
             SELECT DISTINCT
                 '::' + vsi.[staffStateID]
             FROM
-                [student] s2
-                LEFT OUTER JOIN [activeTrial] actr ON actr.[calendarID] = s2.[calendarID] --we need activeTrial to filter Rosters to current PSU
-                LEFT OUTER JOIN [Roster] r ON r.[personID]=s2.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
+                [activeTrial] actr --we need activeTrial to filter Rosters to current PSU
+                LEFT OUTER JOIN [Roster] r ON r.[personID]=s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
                 LEFT OUTER JOIN [v_SectionInfo] vsi ON vsi.[sectionID] = r.[sectionID] --and this view has staffStateID
             WHERE
-                s2.[personID] = s.[personID]
+                actr.[calendarID] = s.[calendarID]
                 AND (r.[startDate] <= getdate()) --started roster enrollments only
                 AND (r.[endDate] >= getdate()) --non-ended roster enrollments only
                 AND len(vsi.[staffStateID])=10 --Staff UID is 10 characters in length.
@@ -62,6 +61,7 @@ WHERE
 
 GROUP BY
     s.[personID],
+    s.[calendarID],
     s.[stateID],
     s.[lastName],
     s.[firstName],
