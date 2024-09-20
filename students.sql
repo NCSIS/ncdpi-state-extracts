@@ -59,7 +59,6 @@ WHERE
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
-    --AND s.[stateID] = '2655942477'
 
 GROUP BY
     s.[personID],
