@@ -39,13 +39,8 @@ SELECT
                 LEFT OUTER JOIN [Person] p ON sec.[teacherPersonID] = p.[personID]
             WHERE
                 s2.[stateID] = s.[stateID]
-                AND (
-                    CAST(r.startDate AS DATE) <= CAST(CURRENT_TIMESTAMP AS DATE)
-                ) --started roster enrollments only
-                AND (
-                    CAST(r.endDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
-                    OR r.endDate IS NULL
-                ) --non-ended roster enrollments only
+                AND (r.[startDate] <= getdate()) --started roster enrollments only
+                AND (r.[endDate] >= getdate()) --non-ended roster enrollments only
                 AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
             FOR XML PATH ('')
         ), 1, 2, ''
@@ -64,8 +59,6 @@ WHERE
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
-    --AND s.[noShow] = 0 --isn't a no-show, removed because the students view already filters this
-    --AND s.[serviceType] = 'P' --student service type is primary, removed due to request from Rutherford
 
 GROUP BY
     s.[stateID],
