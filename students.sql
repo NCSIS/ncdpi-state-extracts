@@ -34,7 +34,7 @@ SELECT
                 '::' + vsi.[staffStateID]
             FROM
                 [activeTrial] actr --we need activeTrial to filter Rosters to current PSU
-                LEFT OUTER JOIN [Roster] r ON r.[personID]=s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
+                LEFT OUTER JOIN [Roster] r ON r.[personID] = s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
                 LEFT OUTER JOIN [v_SectionInfo] vsi ON vsi.[sectionID] = r.[sectionID] --and this view has staffStateID
             WHERE
                 actr.[calendarID] = s.[calendarID]
