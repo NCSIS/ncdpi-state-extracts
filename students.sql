@@ -31,17 +31,17 @@ SELECT
     STUFF(
         (
             SELECT DISTINCT
-                '::' + p.[staffStateID]
+                '::' + vsi.[staffStateID]
             FROM
                 [student] s2
-                LEFT OUTER JOIN [Roster] r ON r.[personID]=s2.[personID]
-                LEFT OUTER JOIN [Section] sec ON sec.[sectionID]=r.[sectionID]
-                LEFT OUTER JOIN [Person] p ON sec.[teacherPersonID] = p.[personID]
+                LEFT OUTER JOIN [activeTrial] actr ON actr.[calendarID] = s2.[calendarID] --we need activeTrial to filter Rosters to current PSU
+                LEFT OUTER JOIN [Roster] r ON r.[personID]=s2.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
+                LEFT OUTER JOIN [v_SectionInfo] vsi ON vsi.[sectionID] = r.[sectionID] --and this view has staffStateID
             WHERE
-                s2.[stateID] = s.[stateID]
+                s2.[personID] = s.[personID]
                 AND (r.[startDate] <= getdate()) --started roster enrollments only
                 AND (r.[endDate] >= getdate()) --non-ended roster enrollments only
-                AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
+                AND len(vsi.[staffStateID])=10 --Staff UID is 10 characters in length.
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
@@ -59,8 +59,10 @@ WHERE
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (s.[endDate] IS NULL OR s.[endDate] >= getdate()) --end date is null or future
     AND s.[activeYear] = 1 --is an active enrollment
+    --AND s.[stateID] = '2655942477'
 
 GROUP BY
+    s.[personID],
     s.[stateID],
     s.[lastName],
     s.[firstName],
