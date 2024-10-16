@@ -31,16 +31,17 @@ SELECT
     STUFF(
         (
             SELECT DISTINCT
-                '::' + vsi.[staffStateID]
+                '::' + p.[staffStateID]
             FROM
                 [activeTrial] actr --we need activeTrial to filter Rosters to current PSU
-                LEFT OUTER JOIN [Roster] r ON r.[personID] = s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the person -and- their activeTrial
-                LEFT OUTER JOIN [v_SectionInfo] vsi ON vsi.[sectionID] = r.[sectionID] --and this view has staffStateID
+                LEFT OUTER JOIN [Roster] r ON r.[personID] = s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the student -and- their activeTrial
+                LEFT OUTER JOIN [Section] sec ON sec.[sectionID] = r.[sectionID] --to get teacher
+                LEFT OUTER JOIN [Person] p ON p.[personID] = sec.[teacherPersonID] --and to get that teacher's UID
             WHERE
                 actr.[calendarID] = s.[calendarID]
                 AND (r.[startDate] <= getdate()) --started roster enrollments only
                 AND (r.[endDate] >= getdate()) --non-ended roster enrollments only
-                AND len(vsi.[staffStateID])=10 --Staff UID is 10 characters in length.
+                AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
