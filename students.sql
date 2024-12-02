@@ -27,7 +27,13 @@ SELECT
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
     sch.[name] as SCHOOL_DESC,
-    c.[email] as EMAIL,
+    --c.[email] as EMAIL,
+    CASE s.[stateID]
+        WHEN '6929453951' THEN '33clhorton@s.carteretk12.org'
+        WHEN '7425929368' THEN '37dlhorton@s.carteretk12.org'
+        WHEN '7142821213' THEN '35clhorton@s.carteretk12.org'
+        ELSE c.[email]
+    END as EMAIL,
     STUFF(
         (
             SELECT DISTINCT
@@ -45,7 +51,13 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    c.[email] as ALIAS_ID,
+    --c.[email] as ALIAS_ID,
+    CASE s.[stateID]
+        WHEN '6929453951' THEN '33clhorton@s.carteretk12.org'
+        WHEN '7425929368' THEN '37dlhorton@s.carteretk12.org'
+        WHEN '7142821213' THEN '35clhorton@s.carteretk12.org'
+        ELSE c.[email]
+    END as ALIAS_ID,
     FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
 
 FROM
