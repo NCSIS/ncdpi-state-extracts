@@ -5,10 +5,12 @@ SELECT DISTINCT
         ELSE sm.[schoolNumber]
     END as SCHOOL_CODE,
     CASE
+        WHEN sm.[staffStateID] = '3448648418' THEN 'aspen.simmons@carteretk12.org'
         WHEN sc.[email] IS NOT NULL THEN sc.[email]
         ELSE c.[email]
     END as EMAIL,
     CASE
+        WHEN sm.[staffStateID] = '3448648418' THEN 'aspen.simmons@carteretk12.org'
         WHEN sc.[email] IS NOT NULL THEN sc.[email]
         ELSE c.[email]
     END as ALIAS_ID
