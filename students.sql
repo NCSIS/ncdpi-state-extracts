@@ -41,6 +41,11 @@ SELECT
         WHEN '3632448949' THEN '27cmhoeft@s.carteretk12.org'
         WHEN '3753142476' THEN '35sraddison@s.carteretk12.org'
         WHEN '1594386625' THEN '34wbaddison@s.carteretk12.org'
+        WHEN '9421345479' THEN 'pinabi5479@wataugaschools.org'
+        WHEN '5957929514' THEN 'nadhun9514@wataugaschools.org'
+        WHEN '8752755177' THEN 'jbethune5177@clinton.k12.nc.us'
+        WHEN '7112536391' THEN 'zbethune6391@clinton.k12.nc.us'
+        WHEN '7616945864' THEN 'zbethune5864@clinton.k12.nc.us'
         ELSE c.[email]
     END as EMAIL,
     STUFF(
@@ -74,6 +79,11 @@ SELECT
         WHEN '3632448949' THEN '27cmhoeft@s.carteretk12.org'
         WHEN '3753142476' THEN '35sraddison@s.carteretk12.org'
         WHEN '1594386625' THEN '34wbaddison@s.carteretk12.org'
+        WHEN '9421345479' THEN 'pinabi5479@wataugaschools.org'
+        WHEN '5957929514' THEN 'nadhun9514@wataugaschools.org'
+        WHEN '8752755177' THEN 'jbethune5177@clinton.k12.nc.us'
+        WHEN '7112536391' THEN 'zbethune6391@clinton.k12.nc.us'
+        WHEN '7616945864' THEN 'zbethune5864@clinton.k12.nc.us'
         ELSE c.[email]
     END as ALIAS_ID,
     FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
