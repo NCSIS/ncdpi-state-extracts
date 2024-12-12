@@ -27,27 +27,7 @@ SELECT
     d.[name] as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
     sch.[name] as SCHOOL_DESC,
-    --c.[email] as EMAIL,
-    CASE s.[stateID]
-        WHEN '6929453951' THEN '33clhorton@s.carteretk12.org'
-        WHEN '7425929368' THEN '37dlhorton@s.carteretk12.org'
-        WHEN '7142821213' THEN '35clhorton@s.carteretk12.org'
-        WHEN '12713866' THEN 'thar3866@jcsnc.org'
-        WHEN '7226869438' THEN 'krukai9438@wataugaschools.org'
-        WHEN '2546415956' THEN 'kruthe5956@wataugaschools.org'
-        WHEN '4459365618' THEN 'kruaur5618@wataugaschools.org'
-        WHEN '12693393' THEN '26cabrady@s.carteretk12.org'
-        WHEN '8736149675' THEN '28cjleggett@s.carteretk12.org'
-        WHEN '3632448949' THEN '27cmhoeft@s.carteretk12.org'
-        WHEN '3753142476' THEN '35sraddison@s.carteretk12.org'
-        WHEN '1594386625' THEN '34wbaddison@s.carteretk12.org'
-        WHEN '9421345479' THEN 'pinabi5479@wataugaschools.org'
-        WHEN '5957929514' THEN 'nadhun9514@wataugaschools.org'
-        WHEN '8752755177' THEN 'jbethune5177@clinton.k12.nc.us'
-        WHEN '7112536391' THEN 'zbethune6391@clinton.k12.nc.us'
-        WHEN '7616945864' THEN 'zbethune5864@clinton.k12.nc.us'
-        ELSE c.[email]
-    END as EMAIL,
+    c.[email] as EMAIL,
     STUFF(
         (
             SELECT DISTINCT
@@ -65,34 +45,14 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    --c.[email] as ALIAS_ID,
-    CASE s.[stateID]
-        WHEN '6929453951' THEN '33clhorton@s.carteretk12.org'
-        WHEN '7425929368' THEN '37dlhorton@s.carteretk12.org'
-        WHEN '7142821213' THEN '35clhorton@s.carteretk12.org'
-        WHEN '12713866' THEN 'thar3866@jcsnc.org'
-        WHEN '7226869438' THEN 'krukai9438@wataugaschools.org'
-        WHEN '2546415956' THEN 'kruthe5956@wataugaschools.org'
-        WHEN '4459365618' THEN 'kruaur5618@wataugaschools.org'
-        WHEN '12693393' THEN '26cabrady@s.carteretk12.org'
-        WHEN '8736149675' THEN '28cjleggett@s.carteretk12.org'
-        WHEN '3632448949' THEN '27cmhoeft@s.carteretk12.org'
-        WHEN '3753142476' THEN '35sraddison@s.carteretk12.org'
-        WHEN '1594386625' THEN '34wbaddison@s.carteretk12.org'
-        WHEN '9421345479' THEN 'pinabi5479@wataugaschools.org'
-        WHEN '5957929514' THEN 'nadhun9514@wataugaschools.org'
-        WHEN '8752755177' THEN 'jbethune5177@clinton.k12.nc.us'
-        WHEN '7112536391' THEN 'zbethune6391@clinton.k12.nc.us'
-        WHEN '7616945864' THEN 'zbethune5864@clinton.k12.nc.us'
-        ELSE c.[email]
-    END as ALIAS_ID,
+    c.[email] as ALIAS_ID,
     FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
 
 FROM
     [student] s --student view
     LEFT OUTER JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
-    LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get district num and name
-    LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] --to get student email
+    LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get PSU num and name
+    LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] AND c.[districtID] = s.[districtID] --to get student email from current PSU only
 
 WHERE
     len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
