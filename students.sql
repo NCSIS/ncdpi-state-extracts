@@ -1,9 +1,9 @@
 SELECT
     s.[stateID] as PUPIL_NUMBER,
-    s.[lastName] as LAST_NAME,
-    s.[firstName] as FIRST_NAME,
-    s.[middleName] as MIDDLE_NAME,
-    s.[suffix] as NAME_SUFFIX,
+    REPLACE(s.[lastName],'"','') as LAST_NAME,
+    REPLACE(s.[firstName],'"','') as FIRST_NAME,
+    REPLACE(s.[middleName],'"','') as MIDDLE_NAME,
+    REPLACE(s.[suffix],'"','') as NAME_SUFFIX,
     FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
     CASE s.[stateGrade] 
         WHEN 'XG' THEN '-9'
@@ -24,9 +24,9 @@ SELECT
         ELSE s.[stateGrade]
     END as GRADE,
     d.[number] as PSU_CODE,
-    d.[name] as PSU_DESC,
+    REPLACE(d.[name],'"','') as PSU_DESC,
     sch.[number] as SCHOOL_CODE,
-    sch.[name] as SCHOOL_DESC,
+    REPLACE(sch.[name],'"','') as SCHOOL_DESC,
     c.[email] as EMAIL,
     STUFF(
         (
