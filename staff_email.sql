@@ -19,5 +19,5 @@ FROM
 WHERE
     LEN(sm.[staffStateID]) = 10 --UID length is 10
     AND (sc.[email] IS NOT NULL OR c.[email] IS NOT NULL) --email populated
-    AND sm.[startDate] <= getdate() --start date is today or prior
-    AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+    AND sm.[startDate] <= (getdate()+1) --start date is tomorrow or prior
+    AND (sm.[endDate] IS NULL OR sm.[endDate] >= (getdate()+1)) --end date is null or future as of tomorrow
