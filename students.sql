@@ -45,7 +45,10 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    c.[email] as ALIAS_ID,
+    CASE d.[number]
+        WHEN '280' THEN null -- Dare requested an opt-out via email.
+        ELSE c.[email]
+    END as ALIAS_ID,
     FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
 
 FROM
