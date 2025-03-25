@@ -1,10 +1,27 @@
+WITH AliasIDPreferences AS (
+    SELECT
+        districtID,
+        value
+    FROM (
+        SELECT
+            districtID,
+            value,
+            row_number() over(partition by districtID order by date desc) as rn
+        FROM [CustomDistrict]
+        WHERE
+            attributeID = (select attributeID from [CampusAttribute] where element = 'aliasIDstudents')
+            AND date<=getdate()
+    ) as T
+    where rn=1
+)
+
 SELECT
     s.[stateID] as PUPIL_NUMBER,
     REPLACE(s.[lastName],'"','') as LAST_NAME,
     REPLACE(s.[firstName],'"','') as FIRST_NAME,
     REPLACE(s.[middleName],'"','') as MIDDLE_NAME,
     REPLACE(s.[suffix],'"','') as NAME_SUFFIX,
-    FORMAT(s.[birthdate],'MM/dd/yyyy') as BIRTH_DATE,
+    CONVERT(varchar(10), s.[birthdate], 101) as BIRTH_DATE,
     CASE s.[stateGrade] 
         WHEN 'XG' THEN '-9'
         WHEN 'UG' THEN '-7'
@@ -45,18 +62,20 @@ SELECT
             FOR XML PATH ('')
         ), 1, 2, ''
     ) as TEACHER_STAFF_ID,
-    CASE d.[number]
-        WHEN '280' THEN null -- Dare requested an opt-out via email.
-        WHEN '260' THEN null -- Cumberland also requested opt-out via email.
+    CASE
+        WHEN a.value='DISABLE' THEN null
+        WHEN d.[number]='280' THEN null
+        WHEN d.[number]='260' THEN null
         ELSE c.[email]
     END as ALIAS_ID,
-    FORMAT(s.[modifiedDate],'MM/dd/yyyy') as MOD_DATE
+    CONVERT(varchar(10), s.[modifiedDate], 101) as MOD_DATE
 
 FROM
     [student] s --student view
     LEFT OUTER JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
     LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get PSU num and name
     LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] AND c.[districtID] = s.[districtID] --to get student email from current PSU only
+    LEFT OUTER JOIN AliasIDPreferences a on a.districtID = s.[districtID]
 
 WHERE
     len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
@@ -79,4 +98,5 @@ GROUP BY
     sch.[number],
     sch.[name],
     c.[email],
-    s.[modifiedDate]
+    s.[modifiedDate],
+    a.value
