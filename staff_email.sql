@@ -5,7 +5,10 @@ SELECT DISTINCT
         ELSE sm.[schoolNumber]
     END as SCHOOL_CODE,
     COALESCE(c.[email],sc.[email]) as EMAIL,
-    COALESCE(c.[email],sc.[email]) as ALIAS_ID
+    CASE
+        WHEN LEFT(sm.[schoolNumber],3)='260' THEN null --260 requested opt-out via email
+        ELSE COALESCE(c.[email],sc.[email])
+    END as ALIAS_ID
 
 FROM
     [staffMember] sm
