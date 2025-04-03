@@ -1,0 +1,5 @@
+https://26D.ncsis.gov/campus/SSO/psu26dagape/federationMetadata/?idpEntityID=https://idp.ncedcloud.org/idp
+https://94K.ncsis.gov/campus/SSO/psu94knalanda/federationMetadata/?idpEntityID=https://idp.ncedcloud.org/idp
+https://62S.ncsis.gov/campus/SSO/psu62shonor/federationMetadata/?idpEntityID=https://idp.ncedcloud.org/idp
+https://68D.ncsis.gov/campus/SSO/psu68dwths/federationMetadata/?idpEntityID=https://idp.ncedcloud.org/idp
+https://41P.ncsis.gov/campus/SSO/psu41pliberty/federationMetadata/?idpEntityID=https://idp.ncedcloud.org/idp
