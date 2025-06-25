@@ -57,7 +57,7 @@ FROM
 WHERE
     len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
     AND s.[enrollmentStateExclude] = 0 --not state excluded
-    AND (s.[endDate] IS NULL OR s.[endDate] >= getdate() OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6')) --end date is null or future or end status isn't real
+    AND (s.[endDate] IS NULL OR s.[endDate] >= getdate() OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6') OR s.[endStatus] IS NULL) --end date is null or future or end status isn't real
     AND s.[activeYear] = 1 --is an active enrollment
 
 GROUP BY
