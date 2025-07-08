@@ -1,0 +1,20 @@
+SELECT
+    s.[stateID],
+    d.[number],
+    REPLACE(d.[name],'"',''),
+    sch.[number],
+    REPLACE(sch.[name],'"',''),
+    c.[email]
+/*SELECT DISTINCT
+    d.[number],
+    d.[name]*/
+FROM
+    [student] s --student view
+    LEFT OUTER JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
+    LEFT OUTER JOIN [district] d ON d.[districtID] = s.[districtID] --to get PSU num and name
+    LEFT OUTER JOIN [contact] c ON c.[personID] = s.[personID] AND c.[districtID] = s.[districtID] --to get student email from current PSU only
+WHERE
+    c.[email] is not null
+    AND c.email <> ' '
+    AND c.[email] like s.[stateID]+'%'
+    AND s.[activeYear] = 1
