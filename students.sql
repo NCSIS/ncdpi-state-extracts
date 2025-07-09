@@ -65,7 +65,7 @@ SELECT
     CASE
         WHEN a.value='DISABLE' THEN null
         WHEN d.[number] in ('280','260','120') THEN null
-        ELSE c.[email]
+        ELSE REPLACE(c.[email],'`','')
     END as ALIAS_ID,
     CONVERT(varchar(10), s.[modifiedDate], 101) as MOD_DATE
 
