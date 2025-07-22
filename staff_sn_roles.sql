@@ -262,6 +262,28 @@ from (
         AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
-        AND se.[schoolnetAddRoles] like '%Access to Approve Assessment Items%') ssnr
-WHERE STAFF_UID is not null
+        AND se.[schoolnetAddRoles] like '%Access to Approve Assessment Items%'
+
+    /*UNION ALL
+
+    -- now make up Teacher roles if they're missing...
+    SELECT DISTINCT
+        sm.[staffStateID] as STAFF_UID,
+        CASE
+            WHEN RIGHT(se.[SchoolNumber],3) = '810' THEN LEFT(se.[SchoolNumber],3)
+            WHEN TRY_CAST(se.[SchoolNumber] as int) IS NOT NULL THEN CAST(se.[SchoolNumber]*1 as varchar)
+            ELSE se.[SchoolNumber]
+        END + ':Teacher' as SCHOOLNET_ROLE,
+        02.5 as ROLE_NUM
+    FROM [v_SchoolEmployment] se
+        LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
+    WHERE
+        len(sm.[staffStateID])=10 --UID is 10 characters in length.
+        AND sm.[startDate] <= getdate() --start date is today or prior
+        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[schoolnetRole] IS NULL
+        AND se.[schoolnetAddRoles] IS NULL
+        AND se.[Teacher] = 1*/
+) ssnr
+WHERE STAFF_UID IS NOT NULL AND LEFT(STAFF_UID,1)<>'0'
 ORDER BY STAFF_UID, ROLE_NUM;
