@@ -26,7 +26,7 @@ SELECT DISTINCT
     --sc.[email] as EMAILsc,
     CASE
         WHEN a.value='DISABLE' THEN null
-        WHEN LEFT(sm.[schoolNumber],3)='260' THEN null --260 requested opt-out via email
+        WHEN LEFT(sm.[schoolNumber],3) in ('260','862') THEN null --260 and 862 requested opt-out via email
         --ELSE REPLACE(COALESCE(c.[email],sc.[email]),'`','')
         ELSE REPLACE(c.[email],'`','')
     END as ALIAS_ID

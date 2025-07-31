@@ -64,7 +64,7 @@ IAMStudents AS (
         ) as TEACHER_STAFF_ID,
         CASE
             WHEN a.value='DISABLE' THEN null
-            WHEN d.[number] in ('280','260','120') THEN null
+            WHEN d.[number] in ('280','260','120','862') THEN null
             ELSE REPLACE(c.[email],'`','')
         END as ALIAS_ID,
         CONVERT(varchar(10), s.[modifiedDate], 101) as MOD_DATE,
