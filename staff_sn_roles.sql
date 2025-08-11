@@ -14,8 +14,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole]=2
 
     UNION ALL
@@ -32,8 +32,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole]=1
 
     UNION ALL
@@ -51,8 +51,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole]=3
 
     UNION ALL
@@ -70,8 +70,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Teacher and Section Level Data%'
@@ -91,8 +91,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Aggregate Level Data%'
@@ -112,8 +112,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Assessment Management%'
@@ -133,8 +133,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Curriculum Management%'
@@ -154,8 +154,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Teacher Lesson Planner%'
@@ -175,8 +175,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetAddRoles] like '%Test Item Administrator%'
 
@@ -195,8 +195,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access for Teachers to Share Assessments%'
@@ -216,8 +216,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Report Manage%' --this is a typo in IC
@@ -237,8 +237,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Approve Instructional Materials%'
@@ -258,8 +258,8 @@ from (
         LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] is not null
         AND se.[schoolnetRole] != 2
         AND se.[schoolnetAddRoles] like '%Access to Approve Assessment Items%'
@@ -279,8 +279,8 @@ from (
     WHERE
         len(sm.[staffStateID])=10 --UID is 10 characters in length.
         AND RIGHT(se.[SchoolNumber],3) <> '810' --no fake roles for PSU-level
-        AND sm.[startDate] <= getdate() --start date is today or prior
-        AND (sm.[endDate] IS NULL OR sm.[endDate] >= getdate()) --end date is null or future
+        AND se.[assignmentStartDate] <= getdate() --start date is today or prior
+        AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= getdate()) --end date is null or future
         AND se.[schoolnetRole] IS NULL
         AND se.[schoolnetAddRoles] IS NULL
         AND se.[Teacher] = 1
