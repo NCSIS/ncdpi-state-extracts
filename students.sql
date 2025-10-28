@@ -17,6 +17,8 @@ WITH AliasIDPreferences AS (
 IAMStudents AS (
     SELECT
         s.[stateID] as PUPIL_NUMBER,
+        s.[personID] as PERSON_ID,
+        s.[calendarID] as CALENDAR_ID,
         REPLACE(s.[lastName],'"','') as LAST_NAME,
         REPLACE(s.[firstName],'"','') as FIRST_NAME,
         REPLACE(s.[middleName],'"','') as MIDDLE_NAME,
@@ -45,23 +47,6 @@ IAMStudents AS (
         sch.[number] as SCHOOL_CODE,
         REPLACE(sch.[name],'"','') as SCHOOL_DESC,
         c.[email] as EMAIL,
-        STUFF(
-            (
-                SELECT DISTINCT
-                    '::' + p.[staffStateID]
-                FROM
-                    [activeTrial] actr --we need activeTrial to filter Rosters to current PSU
-                    LEFT OUTER JOIN [Roster] r ON r.[personID] = s.[personID] AND r.[trialID] = actr.[trialID] --rosters matching the student -and- their activeTrial
-                    LEFT OUTER JOIN [Section] sec ON sec.[sectionID] = r.[sectionID] --to get teacher
-                    LEFT OUTER JOIN [Person] p ON p.[personID] = sec.[teacherPersonID] --and to get that teacher's UID
-                WHERE
-                    actr.[calendarID] = s.[calendarID]
-                    AND (r.[startDate] <= getdate()) --started roster enrollments only
-                    AND (r.[endDate] >= getdate()) --non-ended roster enrollments only
-                    AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
-                FOR XML PATH ('')
-            ), 1, 2, ''
-        ) as TEACHER_STAFF_ID,
         CASE
             WHEN a.value='DISABLE' THEN null
             WHEN d.[number] in ('280','260','120','862') THEN null
@@ -82,26 +67,20 @@ IAMStudents AS (
         AND s.[enrollmentStateExclude] = 0 --not state excluded
         AND (s.[endDate] IS NULL OR s.[endDate] >= getdate() /*OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6') OR s.[endStatus] IS NULL*/) --end date is null or future or end status isn't real, but temp removed end status logic for BOY 25-26
         AND s.[activeYear] = 1 --is an active enrollment
-        AND s.[serviceType] = 'P' --is a primary enrollment, added 10-7-25 to filter out cross-enrolls to ensure home school teachers are processed.
-
-    GROUP BY
-        s.[personID],
-        s.[calendarID],
-        s.[stateID],
-        s.[lastName],
-        s.[firstName],
-        s.[middleName],
-        s.[suffix],
-        s.[birthdate],
-        s.[stateGrade],
-        d.[number],
-        d.[name],
-        sch.[number],
-        sch.[name],
-        c.[email],
-        s.[modifiedDate],
-        s.[serviceType],
-        a.value
+),
+IAMRosters as (
+    SELECT DISTINCT
+            ist.PERSON_ID as PERSON_ID, p.[staffStateID] as TEACHER_STAFF_ID
+    FROM
+        IAMStudents ist
+        LEFT OUTER JOIN [activeTrial] actr ON actr.[calendarID] = ist.CALENDAR_ID --we need activeTrial to filter Rosters to current PSU
+        LEFT OUTER JOIN [Roster] r ON r.[personID] = ist.PERSON_ID AND r.[trialID] = actr.[trialID] --rosters matching the student -and- their activeTrial
+        LEFT OUTER JOIN [Section] sec ON sec.[sectionID] = r.[sectionID] --to get teacher
+        LEFT OUTER JOIN [Person] p ON p.[personID] = sec.[teacherPersonID] --and to get that teacher's UID
+    WHERE
+        r.[startDate] <= getdate() --started roster enrollments only
+        AND r.[endDate] >= getdate() --non-ended roster enrollments only
+        AND len(p.[staffStateID])=10 --Staff UID is 10 characters in length.
 )
 
 SELECT
@@ -117,8 +96,24 @@ SELECT
     SCHOOL_CODE,
     SCHOOL_DESC,
     EMAIL,
-    TEACHER_STAFF_ID,
+    STRING_AGG(TEACHER_STAFF_ID,'::') as TEACHER_STAFF_ID,
     ALIAS_ID,
     MOD_DATE
 FROM IAMStudents
-WHERE PICK_ROW=1;
+LEFT JOIN IAMRosters ON IAMStudents.PERSON_ID = IAMRosters.PERSON_ID
+WHERE PICK_ROW=1
+GROUP BY
+    PUPIL_NUMBER,
+    LAST_NAME,
+    FIRST_NAME,
+    MIDDLE_NAME,
+    NAME_SUFFIX,
+    BIRTH_DATE,
+    GRADE,
+    PSU_CODE,
+    PSU_DESC,
+    SCHOOL_CODE,
+    SCHOOL_DESC,
+    EMAIL,
+    ALIAS_ID,
+    MOD_DATE
