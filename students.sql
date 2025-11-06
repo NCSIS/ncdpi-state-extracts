@@ -53,6 +53,7 @@ IAMStudents AS (
             ELSE REPLACE(c.[email],'`','')
         END as ALIAS_ID,
         CONVERT(varchar(10), s.[modifiedDate], 101) as MOD_DATE,
+        s.[serviceType] as SERVICE_TYPE,
         ROW_NUMBER() OVER(PARTITION BY s.[stateID],sch.[number] ORDER BY s.[serviceType] ASC) as PICK_ROW
 
     FROM
@@ -116,4 +117,7 @@ GROUP BY
     SCHOOL_DESC,
     EMAIL,
     ALIAS_ID,
+    SERVICE_TYPE,
     MOD_DATE
+ORDER  BY
+    SERVICE_TYPE asc
