@@ -4,6 +4,7 @@ IF OBJECT_ID('tempdb..#IAMStudents') IS NOT NULL DROP TABLE #IAMStudents;
 IF OBJECT_ID('tempdb..#IAMRosters') IS NOT NULL DROP TABLE #IAMRosters;
 
 DECLARE @asof datetime2 = SYSDATETIME();
+DECLARE @asofEnd datetime2 = dateadd(day,-1,@asof);
 
 DECLARE @StudentAliasAttrID int =
 (SELECT attributeID FROM dbo.CampusAttribute WHERE element = 'aliasIDstudents');
@@ -96,7 +97,7 @@ FROM
 WHERE 1=1
     AND len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
     AND s.[enrollmentStateExclude] = 0 --not state excluded
-    AND (s.[endDate] IS NULL OR s.[endDate] >= @asof /*OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6') OR s.[endStatus] IS NULL*/) --end date is null or future or end status isn't real, but temp removed end status logic for BOY 25-26
+    AND (s.[endDate] IS NULL OR s.[endDate] >= @asofEnd /*OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6') OR s.[endStatus] IS NULL*/) --end date is null or future or end status isn't real, but temp removed end status logic for BOY 25-26
     AND s.[activeYear] = 1; --is an active enrollment
 
 CREATE CLUSTERED INDEX IXc_Students ON #IAMStudents (PERSON_ID, SCHOOL_CODE);
@@ -112,7 +113,7 @@ FROM
     LEFT JOIN [Person] p ON p.[personID] = sec.[teacherPersonID] --and to get that teacher's UID
 WHERE 1=1
     AND r.[startDate] <= @asof --started roster enrollments only
-    AND r.[endDate] >= @asof --non-ended roster enrollments only
+    AND r.[endDate] >= @asofEnd --non-ended roster enrollments only
     AND len(p.[staffStateID])=10; --Staff UID is 10 characters in length.
 
 CREATE NONCLUSTERED INDEX IX_Rosters_Person ON #IAMRosters (PERSON_ID)
