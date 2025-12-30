@@ -1,50 +1,15 @@
 
-# Identity and Access Management SQL Scripts for Infinite Campus
+# NCDPI State Edition Extracts
 
-These scripts are designed to be run from the NCSIS State Edition.
+This repo includes a collection of scripts used by NCDPI to pull source data files from the Infinite Campus: State Edition environment for consumption by downstream systems.
 
-## students.sql
+Currently, only scripts supported by the PSU Technology Systems section are included here.
 
-This script pulls student account data in the same format as the old student extract. Note that it only pulls a student's "Primary" enrollment record. Secondary enrollments are not included at this time.
+## Amplify mCLASS
+These scripts populate the Amplify mCLASS system for Read to Achieve.
 
-## students_de.sql
-This is a fork of the students script written for the District Edition schema. The only difference is that active class roster start dates are null in the District Edition.
+## IAM
+These scripts populate the NCEdCloud IAM Service. They also provide employee emails for NCEES.
 
-## student_sn_roles.sql
-
-This script assembles student Schoolnet roles based off their currently enrolled school.
-
-## staff_email.sql
-
-This script pulls the UID and email address of all currently active employees.
-
-## staff_sn_roles.sql
-
-This script uses a series of nested queries to pull out assigned staff Schoolnet roles from the custom fields on the Infinite Campus District Assignments screen.
-
-## staff_sn_roles_TEMP-JM.sql
-
-This script was a temporary solution to assemble teacher Schoolnet roles based off their District Assignments where the "Teacher" box is checked.
-
-## parents.sql
-
-~~This script was written for the PSU level instances and pulls user account records in Infinite Campus where the account type is SAML, the assigned IdP contains "NCEdCloud," the username value is equal to the email address value, and the Infinite Campus homepage is set to the Parent Portal.~~ __This script needs to be rewritten for the State Edition schema. Logic may change. This feature / file is on hold until post-implementation.__
-
-## Random Notes
-
-### Email Addresses
-Email addresses in the State Edition database are stored in the __Contact__ table for students and staff. If a staff member is also a parent, the email may be in the __StudentContact__ table instead. The Contact table is a simple join on personID and districtID. The StudentContact table needs a join on personID, districtID, and a relationship value of "self."
-
-This value also fills the Alias ID field for Students and Staff.
-
-### Alias ID
-
-This enables alias ID for all PSUs. Alias ID will fill with student or staff emails. Previously, this was determined by an opt-in table at SAS. With Infinite Campus, everyone is opted-in by default and each PSU can choose whether or not to advertise or use it.
-
-### Multivalued Teacher UID Field
-
-Each student record has a field that is a list of their teachers' UIDs separated by double colons. The script uses the student personID to look up their sectionIDs in the roster table. For each sectionID, it looks in the sections table to get the teacherPersonID. Finally, for each teacherPersonID, it searches the Person table by ID to get the staffStateID. It's using STUFF with a nested query to accomplish this.
-
-### Staff Email File
-
-This will be a NEW file for IDAuto. Staff will be initially provisioned by the existing Staff jobs at SAS. The data source for those jobs is Staff UID. Nothing about that will change. This new file serves only to feed employee emails from Infinite Campus to IDAuto. This file is also used by the NCEES_Emails script to insert email addresses from Infinite Campus into the NCEES source data file.
+## K3TS
+These scripts populate the NC Early Learning Inventory (NCELI), powered by Teaching Strategies (K3TS).
