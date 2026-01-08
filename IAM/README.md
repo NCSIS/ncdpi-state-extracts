@@ -36,4 +36,4 @@ Each student record has a field that is a list of their teachers' UIDs separated
 
 ### Staff Email File
 
-This file is delivered to the NC Staff UID System server. Scripts there join it with Staff UID data to produce the staff source data files for both IAM and NCEES.
+This file is delivered to the NC Staff UID System server. [Scripts there join it with Staff UID data to produce the staff source data files for both IAM and NCEES.](https://github.com/ncdpi-operations/ncdpi_scripts_v1/tree/main/staff/staff_source_extracts)
