@@ -17,11 +17,6 @@ SELECT DISTINCT
         sm.[staffStateID] as STAFF_UID,
         CASE
             WHEN RIGHT(se.[SchoolNumber],3) = '810' THEN LEFT(se.[SchoolNumber],3)
-            /*WHEN RIGHT(se.[SchoolNumber],3) = '810' THEN
-                CASE
-                    WHEN TRY_CAST(LEFT(se.[SchoolNumber],3) as int) IS NOT NULL THEN CAST(LEFT(se.[SchoolNumber],3)*1 as varchar)
-                    ELSE LEFT(se.[SchoolNumber],3)
-                END --if District level needs leading 0 stripped? */
             WHEN TRY_CAST(se.[SchoolNumber] as int) IS NOT NULL THEN CAST(se.[SchoolNumber]*1 as varchar)
             ELSE se.[SchoolNumber]
         END as SCHOOL_CODE,
@@ -40,7 +35,7 @@ SELECT DISTINCT
         AND sm.[staffStateID]<>'9999999999'
         AND se.[assignmentStartDate] <= @asof --start date is today or prior
         AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= @asofEnd) --end date is null or future
-        AND (se.[schoolnetRole] between 1 and 3)
+        AND se.[schoolnetRole] between 1 and 3
         AND se.[SchoolNumber] IS NOT NULL;
 
 --Pull Primary Roles
