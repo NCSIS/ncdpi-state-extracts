@@ -17,7 +17,10 @@ This script pulls the UID and email address of all currently active employees.
 
 ## staff_sn_roles.sql
 
-This script uses a series of nested queries to pull out assigned staff Schoolnet roles from the custom fields on the Infinite Campus District Assignments screen. The script filters invalid role combinations when "Leadership" is assigned.
+This script pulls assigned staff Schoolnet roles from the custom fields on the Infinite Campus District Assignments screen. The script filters invalid role combinations when "Leadership" is assigned. It also filters out additional roles that are assigned without a primary role.
+
+### Data Validations
+This repo includes a set of data validations to troubleshoot staff Schoolnet roles. These are published via the Infinite Campus: State Edition.
 
 ## Random Notes
 
