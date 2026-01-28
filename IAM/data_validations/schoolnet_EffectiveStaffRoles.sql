@@ -6,7 +6,7 @@ Group Description:  This validation group lists active staff with effective Scho
 Created by: John Mairs
 Created Date: 1/28/2026
 Last Published Date: 
-Revision History: See GitHub
+Revision History: See GitHub -- https://github.com/NCSIS/ncdpi-state-extracts/tree/main/IAM/data_validations
 */
 
 DECLARE @schoolID INT = NULLIF ({selectedSchool}, 0)  --Selected School from Context Menu in UI
