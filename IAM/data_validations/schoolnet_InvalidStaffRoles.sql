@@ -5,7 +5,7 @@ Group Name: (NC) Schoolnet - Staff Roles
 Group Description:  This validation group lists active staff with effective Schoolnet roles, active staff with no Schoolnet roles, and active staff with invalid Schoolnet roles.
 Created by: John Mairs
 Created Date: 1/28/2026
-Last Published Date: 
+Last Published Date: 1/29/2026
 Revision History: See GitHub -- https://github.com/NCSIS/ncdpi-state-extracts/tree/main/IAM/data_validations
 */
 DECLARE @schoolID INT = NULLIF ({selectedSchool}, 0)  --Selected School from Context Menu in UI
