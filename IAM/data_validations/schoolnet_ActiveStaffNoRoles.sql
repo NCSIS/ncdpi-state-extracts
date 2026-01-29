@@ -36,4 +36,4 @@ WHERE
     AND se.[schoolnetAddRoles] IS NULL
     AND se.[SchoolNumber] IS NOT NULL
     AND se.[schoolID] = ISNULL(@schoolID, sm.[schoolID])
-ORDER BY LAST_NAME asc, FIRST_NAME asc, SCHOOL_NAME asc;
+ORDER BY SCHOOL_NAME asc, LAST_NAME asc, FIRST_NAME asc;

@@ -29,10 +29,9 @@ SELECT DISTINCT
         WHEN 2 THEN 'Leadership'
         WHEN 3 THEN 'Staff'
     END as SCHOOLNET_ROLE,
-    LTRIM(RTRIM(value)) as SCHOOLNET_ADD_ROLE
+    se.[schoolnetAddRoles] as SCHOOLNET_ADD_ROLES
 FROM [v_SchoolEmployment] se
     LEFT OUTER JOIN [staffMember] sm ON sm.[personID]=se.[personID]
-    CROSS APPLY STRING_SPLIT(se.[schoolnetAddRoles], ',')
 WHERE
     len(sm.[staffStateID])=10 --UID is 10 characters in length.
     AND LEFT(sm.[staffStateID],1) not in ('0','a','c','d','l')
@@ -40,6 +39,7 @@ WHERE
     AND se.[assignmentStartDate] <= @asof --start date is today or prior
     AND (se.[assignmentEndDate] IS NULL OR se.[assignmentEndDate] >= @asofEnd) --end date is null or future
     AND se.[schoolnetRole] IS NULL
+    AND se.[schoolnetAddRoles] IS NOT NULL
     AND se.[SchoolNumber] IS NOT NULL
     AND se.[schoolID] = ISNULL(@schoolID, sm.[schoolID])
-ORDER BY LAST_NAME asc, FIRST_NAME asc, SCHOOL_NAME asc;
+ORDER BY SCHOOL_NAME asc, LAST_NAME asc, FIRST_NAME asc;
