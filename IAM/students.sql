@@ -87,18 +87,26 @@ SELECT
     END as ALIAS_ID,
     CONVERT(varchar(10), s.[modifiedDate], 101) as MOD_DATE,
     s.[serviceType] as SERVICE_TYPE,
-    ROW_NUMBER() OVER(PARTITION BY s.[stateID],s.[schoolID] ORDER BY s.[serviceType] ASC) as PICK_ROW
+    ROW_NUMBER() OVER(PARTITION BY s.[stateID],s.[schoolID] ORDER BY s.[serviceType] ASC, s.[startStatus] DESC) as PICK_ROW
 FROM
     [student] s --student view
     LEFT JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
     LEFT JOIN [district] d ON d.[districtID] = s.[districtID] --to get PSU num and name
     LEFT JOIN [contact] c ON c.[personID] = s.[personID] AND c.[districtID] = s.[districtID] --to get student email from current PSU only
     LEFT JOIN AliasIDPreferences a on a.districtID = s.[districtID]
+    OUTER APPLY (select top 1 date from dbo.[day] dy where dy.calendarID = s.calendarID and dy.schoolDay = 1 order by date desc) dy
 WHERE 1=1
     AND len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
     AND s.[enrollmentStateExclude] = 0 --not state excluded
-    AND (s.[endDate] IS NULL OR s.[endDate] >= @asofEnd /*OR s.[endStatus] NOT IN ('W1','W2','W2T','W3','W4','W6') OR s.[endStatus] IS NULL*/) --end date is null or future or end status isn't real, but temp removed end status logic for BOY 25-26
-    AND s.[activeYear] = 1; --is an active enrollment
+    AND (
+        s.[endDate] IS NULL
+        OR s.[endDate] >= @asofEnd
+        OR (s.[endDate] = dy.date AND s.[activeYear] = 1)
+    ) --end date is null or future or equal to last day in session within activeYear
+    AND (
+        s.[activeYear] = 1
+        OR (s.startStatus = 'S1' and s.[startDate] <= @asof)
+    ); --is an activeYear or active Summer enrollment
 
 CREATE CLUSTERED INDEX IXc_Students ON #IAMStudents (PERSON_ID, SCHOOL_CODE);
 
