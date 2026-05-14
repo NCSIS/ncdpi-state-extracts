@@ -107,6 +107,7 @@ WHERE 1=1
         s.[activeYear] = 1
         OR (s.startStatus = 'S1' and s.[startDate] <= @asof)
     ); --is an activeYear or active Summer enrollment
+    --AND EXISTS (select 1 from SchoolAttribute sa where sa.schoolID = s.schoolID and sa.operationalStatus in (1,3,4,5,8)); --is an open PSU
 
 CREATE CLUSTERED INDEX IXc_Students ON #IAMStudents (PERSON_ID, SCHOOL_CODE);
 
