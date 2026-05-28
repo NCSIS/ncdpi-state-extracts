@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 d.number + CASE WHEN RIGHT(scl.number,3) = '296' THEN RIGHT(ISNULL(cal.number,scl.number),3) ELSE RIGHT(scl.number,3) END as 'Institution'
 	,sec.sectionID as 'Primary Class ID'
@@ -14,6 +18,7 @@ join dbo.Course crs ON crs.courseID = sec.courseID and crs.calendarID = cal.cale
 join dbo.Roster ros ON ros.personID = stu.personID and ros.trialID = trl.trialID and ros.sectionID = sec.sectionID
 join dbo.GradeLevel gl ON gl.calendarID = cal.calendarID and gl.name = stu.grade and gl.structureID = stu.structureID
 cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calendarID and dy.schoolDay = 1 order by date asc) dy
+cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calendarID and dy.schoolDay = 1 order by date desc) dyl
 outer apply (select top 1 r.personID
 				from dbo.AtRisk r
 				where r.personID = stu.personID
@@ -27,12 +32,12 @@ where 1=1
 and (stu.startDate <= getdate()
 	or getdate() < dy.date)
 and (
-	(stu.endDate IS NULL OR stu.endDate >= getdate())
+	(stu.endDate IS NULL OR stu.endDate >= getdate() OR stu.endDate=dyl.date)
 	)
 and stu.serviceType = 'P'
 and (ros.startDate IS NULL OR ros.startDate <= getdate() or getdate() < dy.date)
 and (
-	(ros.endDate IS NULL OR ros.endDate >= getdate())
+	(ros.endDate IS NULL OR ros.endDate >= getdate() OR ros.endDate=dyl.date)
 	)
 and (RIGHT(scl.number,3) >= '300'
 	OR
