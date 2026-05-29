@@ -1,3 +1,8 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
+
 SET NOCOUNT ON;
 
 IF OBJECT_ID('tempdb..#IAMStudents') IS NOT NULL DROP TABLE #IAMStudents;
