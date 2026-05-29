@@ -93,16 +93,16 @@ FROM
     LEFT JOIN [school] sch ON sch.[schoolID] = s.[schoolID] --to get school num and name
     LEFT JOIN [district] d ON d.[districtID] = s.[districtID] --to get PSU num and name
     LEFT JOIN [contact] c ON c.[personID] = s.[personID] AND c.[districtID] = s.[districtID] --to get student email from current PSU only
-    LEFT JOIN AliasIDPreferences a on a.districtID = s.[districtID]
-    OUTER APPLY (select top 1 date from dbo.[day] dy where dy.calendarID = s.calendarID and dy.schoolDay = 1 order by date desc) dy
+    LEFT JOIN AliasIDPreferences a on a.districtID = s.[districtID] --would pull aliasID prefs from Campus UI if that worked...
+    OUTER APPLY (select top 1 endDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=s.structureID order by Term.endDate desc) term --find last day of last term for the year
 WHERE 1=1
     AND len(s.[stateID]) between 5 and 10 --UID is between 5 and 10 characters in length.
     AND s.[enrollmentStateExclude] = 0 --not state excluded
     AND (
         s.[endDate] IS NULL
         OR s.[endDate] >= @asofEnd
-        OR (s.[endDate] = dy.date AND s.[activeYear] = 1)
-    ) --end date is null or future or equal to last day in session within activeYear
+        OR (s.[endDate] = term.endDate AND s.[activeYear] = 1)
+    ) --end date is null or future or equal to last day of final term within activeYear
     AND (
         s.[activeYear] = 1
         OR (s.startStatus = 'S1' and s.[startDate] <= @asof)
