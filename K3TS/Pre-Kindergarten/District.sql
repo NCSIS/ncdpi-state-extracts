@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select d.number as 'sourceProgramID'
 	,LEFT(d.name,50) as 'name'
 	,LEFT(d.address,30) as 'address1'

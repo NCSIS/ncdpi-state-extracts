@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 i.staffStateID as 'sourceUserID'
 	,CASE WHEN s.number = '296' THEN d.number + ISNULL(cal.number,s.number)

@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 stu.stateID as 'sourceChildID'
 	,d.number + LEFT(crs.number,4) + '-' + CAST(crs.sectionID as varchar) as 'sourceClassID'
