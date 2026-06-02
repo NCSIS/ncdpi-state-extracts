@@ -41,6 +41,5 @@ and ISNUMERIC(d.number) = 1
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(s.number) = 1
-and ISNUMERIC(d.number) = 1
 --and RIGHT(s.number,3) >= '300'
 group by sec.sectionID,i.staffStateID,i.lastName,d.number,s.number,cal.number,crs.number
