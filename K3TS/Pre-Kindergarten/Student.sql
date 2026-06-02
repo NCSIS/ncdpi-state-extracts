@@ -2,6 +2,16 @@
 Script maintained by NCDPI, PSU Technology Systems Section.
 See https://github.com/NCSIS/ncdpi-state-extracts.
 **********************************************/
+
+IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
+CREATE TABLE #PKTScounties(
+  LEA_CODE      varchar(3)   NOT NULL,
+  COUNTY_CODE	varchar(3)           NOT NULL,
+);
+insert into #PKTScounties (LEA_CODE,COUNTY_CODE) values
+	('010','001'),('020','002'),('030','003'),('040','004'),('050','005'),('060','006'),('070','007'),('080','008'),('090','009'),('100','010'),('110','011'),('111','011'),('120','012'),('130','013'),('132','013'),('140','014'),('150','015'),('160','016'),('170','017'),('180','018'),('181','018'),('182','018'),('190','019'),('200','020'),('209','087'),('210','021'),('220','022'),('230','023'),('240','024'),('241','024'),('250','025'),('260','026'),('269','026'),('270','027'),('280','028'),('290','029'),('291','029'),('292','029'),('296','098'),('297','012'),('298','999'),('299','999'),('300','030'),('310','031'),('320','032'),('330','033'),('340','034'),('350','035'),('360','036'),('370','037'),('380','038'),('390','039'),('400','040'),('410','041'),('420','042'),('421','042'),('422','042'),('430','043'),('440','044'),('450','045'),('460','046'),('470','047'),('480','048'),('486','999'),('490','049'),('491','049'),('500','050'),('510','051'),('520','052'),('530','053'),('540','054'),('550','055'),('560','056'),('570','057'),('580','058'),('590','059'),('600','060'),('610','061'),('620','062'),('630','063'),('640','064'),('650','065'),('660','066'),('670','067'),('679','026'),('680','068'),('681','068'),('690','069'),('700','070'),('710','071'),('720','072'),('730','073'),('740','074'),('750','075'),('760','076'),('761','076'),('770','077'),('780','078'),('790','079'),('800','080'),('810','081'),('820','082'),('821','082'),('830','083'),('840','084'),('850','085'),('860','086'),('861','086'),('862','086'),('870','087'),('880','088'),('890','089'),('900','090'),('910','091'),('920','092'),('930','093'),('940','094'),('950','095'),('960','096'),('970','097'),('980','098'),('990','099'),('995','100'),('996','999'),('997','999'),('998','092')
+;
+
 select distinct
 	 stu.stateID as 'sourceChildID'
 	,d.number + LEFT(crs.number,4) + '-' + CAST(crs.sectionID as varchar) as 'sourceClassID'
@@ -85,9 +95,9 @@ select distinct
 			WHEN homePrimaryLanguage IS NULL THEN '3'
 			ELSE '0' END as 'LanguageID' 
 	,LEFT(stu.middleName,1) as 'MiddleInitial'
-	,NULL as 'customResponseValue2' --if Enroll is NC Pre-K, 1. Else 2.
-	,NULL as 'customResponseValue3' --if Enroll is Head Start, 2. Else 3.
-	,NULL as 'customResponseValue4' --need crosswalk counties
+	,CASE WHEN eLNCPK.bool=1 THEN '1' ELSE '0' END as 'customResponseValue2' --if Enroll is NC Pre-K, 1. Else 0.
+	,CASE WHEN eLHS.bool=1 THEN '2' ELSE '3' END as 'customResponseValue3' --if Enroll is Head Start, 2. Else 3.
+	,#PKTScounties.COUNTY_CODE as 'customResponseValue4' -- county code from TeachingStrategies crosswalk.
 	,'1' as 'customResponseValue5' --if Enroll is in an LEA operated classroom, 1. So hardcode 1 from NCSIS.
 from dbo.District d
 join dbo.School s ON s.districtID = d.districtID
@@ -95,6 +105,7 @@ join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.student stu WITH(NOEXPAND) ON stu.calendarID = cal.calendarID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
+join #PKTScounties ON d.number=#PKTScounties.LEA_CODE
 cross apply (select top 1 crs.number,sec.sectionID
 			from dbo.Course crs 
 			join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
@@ -111,6 +122,8 @@ cross apply (select top 1 crs.number,sec.sectionID
 				and (ros.endDate IS NULL OR ros.endDate >= getdate())
 			) crs
 cross apply (select top 1 date from dbo.day d where d.calendarID = cal.calendarID and ISNULL(d.schoolDay,0) = 1 order by date asc) dy
+outer apply (select 1 as bool from EarlyLearningEnrollmentType join EarlyLearning on EarlyLearning.earlyLearningID=EarlyLearningEnrollmentType.earlyLearningID where EarlyLearning.personID=stu.personID and EarlyLearning.districtID=stu.districtID and value=6) eLNCPK --is student NC Pre-K?
+outer apply (select 1 as bool from EarlyLearningEnrollmentType join EarlyLearning on EarlyLearning.earlyLearningID=EarlyLearningEnrollmentType.earlyLearningID where EarlyLearning.personID=stu.personID and EarlyLearning.districtID=stu.districtID and value=4) eLHS --is student Head Start?
 where 1=1
 and (stu.startDate <= getdate()
 	or getdate() < dy.date
@@ -121,4 +134,6 @@ and (
 and ISNUMERIC(s.number) = 1
 and ISNUMERIC(d.number) = 1
 --and (RIGHT(s.number,3) >= '300')
-and stu.stateID > '1000000000'
+and stu.stateID > '1000000000';
+
+IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
