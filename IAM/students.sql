@@ -107,7 +107,8 @@ WHERE 1=1
         s.[endDate] IS NULL
         OR s.[endDate] >= @asofEnd
         OR (s.[endDate] = term.endDate AND s.[activeYear] = 1)
-    ) --end date is null or future or equal to last day of final term within activeYear
+        OR (s.[endStatus] in ('EYC','EYCN','W4','W6','PR','PRN') AND s.[activeYear] = 1)
+    ) --end date is null, or future, or equal to last day of final term within activeYear, or endStatus is one we should hold within activeYear
     AND (
         s.[activeYear] = 1
         OR (s.startStatus = 'S1' and s.[startDate] <= @asof)
