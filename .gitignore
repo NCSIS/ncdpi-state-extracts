@@ -36,4 +36,4 @@
 # SSMS / VSCode Junk #
 ######################
 **/.vs
-*.snlx
+*.slnx
