@@ -1,7 +1,7 @@
 select distinct
 	 d.number + LEFT(crs.number,4) + '-' + CAST(sec.sectionID as varchar) as 'sourceClassID'
 	,i.staffStateID as 'sourceUserID'
-	,crs.name as 'name'
+	,i.lastName as 'name'
 	,'6' as 'gradeLevelList' --hard coded - do i need to look up students in class?
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.staffStateID ELSE '' END) as SectionTeacher2ID
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.teacherName ELSE '' END) as Teacher2CoTeacher_FL
@@ -40,4 +40,4 @@ and (RIGHT(s.number,3) >= '300'
 	--OR
 	--ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
 	)
-group by sec.sectionID,i.staffStateID,crs.name,d.number,s.number,cal.number,crs.number
+group by sec.sectionID,i.staffStateID,i.lastName,d.number,s.number,cal.number,crs.number
