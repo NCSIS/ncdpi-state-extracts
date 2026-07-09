@@ -27,12 +27,13 @@ join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID 
 join dbo.Individual i ON i.personID = ssh.personID
 join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID
 where 1=1
-and ssh.staffType = 'P'
+--and ssh.staffType = 'P'
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
 and c.email IS NOT NULL
+and i.staffStateID IS NOT NULL
 
 UNION ALL
 
@@ -70,11 +71,12 @@ and (
 			and crs.stateCode ='99329P0' --only PK Courses
 			and crs.active = 1
 			)
-	or exists(
-		select 1 from GradeLevel where stateGrade in ('IT','PR','PK') and GradeLevel.calendarID=cal.calendarID
-	)
+	--or exists(
+		--select 1 from GradeLevel where stateGrade in ('IT','PR','PK') and GradeLevel.calendarID=cal.calendarID
+	--)
 )
 and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
 and ea.k3TSAdminRole IS NOT NULL
 and c.email IS NOT NULL
+and i.staffStateID IS NOT NULL
