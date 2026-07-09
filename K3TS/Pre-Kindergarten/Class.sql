@@ -24,7 +24,7 @@ join dbo.School s ON s.districtID = d.districtID
 join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
-join dbo.Course crs ON crs.calendarID = cal.calendarID and crs.stateCode ='99329P0' --only PK Courses
+join dbo.Course crs ON crs.calendarID = cal.calendarID and crs.stateCode ='99329P0' --only PK Homeroom
 join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
