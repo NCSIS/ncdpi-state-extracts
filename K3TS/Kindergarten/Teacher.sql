@@ -10,7 +10,7 @@ select distinct
 	,c.email as 'email'
 	,'1' as 'userTypeID' --1 = teacher, 3 = admin
 	,'1' as 'adminTypeID' --is this correct for teachers?
-	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone),'(',''),')',''),'-','') as 'phone'
+	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone,'5555555555'),'(',''),')',''),'-','') as 'phone'
 	,'3' as 'currTypeID'
 from dbo.District d
 join dbo.School s ON s.districtID = d.districtID
@@ -22,9 +22,8 @@ join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseI
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
 join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID --JBM updated 11/10/25, more reliable.
---outer apply (select top 1 * from dbo.StudentContact c where c.districtID = d.districtID and c.email IS NOT NULL and c.personID = i.personID and c.relationship = 'Self' order by contactID desc) c
 where 1=1
-and ssh.staffType = 'P'
+--and ssh.staffType = 'P'
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(s.number) = 1
@@ -32,6 +31,8 @@ and (RIGHT(s.number,3) >= '300'
 	OR
 	ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
 	)
+and c.email IS NOT NULL
+and i.staffStateID IS NOT NULL
 
 UNION ALL
 
@@ -40,6 +41,7 @@ UNION ALL
 select distinct
 	 i.staffStateID as 'sourceUserID'
 	,CASE WHEN s.number = '296' THEN d.number + ISNULL(cal.number,s.number)
+		  WHEN RIGHT(s.number,3) = '810' THEN ISNULL((select min(s2.number) from School s2 join dbo.Calendar cal2 ON cal2.endYear = sy.endYear and cal2.schoolID = s2.schoolID where s2.districtID=s.districtID and exists (select 1 from dbo.Course crs where crs.calendarID = cal2.calendarID and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0'))),(d.number+'296'))
 	      WHEN LEN(s.number) = 3 THEN d.number + s.number 
 		  ELSE s.number 
 		  END as 'sourceSiteID'
@@ -50,7 +52,7 @@ select distinct
 	,'3' as 'userTypeID' --1 = teacher, 3 = admin
 	--,eav.value as 'adminTypeID' --is this correct for teachers?
 	,ea.k3TSAdminRole as 'adminTypeID' --is this correct for teachers?
-	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone),'(',''),')',''),'-','') as 'phone'
+	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone,'5555555555'),'(',''),')',''),'-','') as 'phone'
 	,'3' as 'currTypeID'
 from dbo.District d
 join dbo.School s ON s.districtID = d.districtID
@@ -66,14 +68,17 @@ where 1=1
 and ISNUMERIC(d.number) = 1
 and ea.startDate <= getdate()
 and (ea.endDate IS NULL OR ea.endDate >= getdate())
-and exists(select 1
+and (exists(select 1
 			from dbo.Course crs
 			where crs.calendarID = cal.calendarID
 			and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0') --only KG ELA courses --JBM updated 11/18/25, remove course 1001 per Dan Tetreault
 			)
+	or RIGHT(s.number,3)='810')
 and ISNUMERIC(s.number) = 1
 and (RIGHT(s.number,3) >= '300'
 	--OR
 	--ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
 	)
 and ea.k3TSAdminRole IS NOT NULL
+and c.email IS NOT NULL
+and i.staffStateID IS NOT NULL
