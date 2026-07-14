@@ -9,7 +9,7 @@ select distinct
 	,i.staffStateID as 'username'
 	,c.email as 'email'
 	,'1' as 'userTypeID' --1 = teacher, 3 = admin
-	,'1' as 'adminTypeID' --is this correct for teachers?
+	,'0' as 'adminTypeID' -- always 0 unless userTypeID is 3
 	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone,'5555555555'),'(',''),')',''),'-','') as 'phone'
 	,'3' as 'currTypeID'
 from dbo.District d
