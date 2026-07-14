@@ -6,8 +6,8 @@ These are largely based on the original scripts from our old system with a few m
 Notably...
 - 4th grade students with an "RRET" flag will still appear as 4th graders. An additional flag to indicate RRET status has been added to ensure the correct test is assigned.
 - Rostering for K-3 ELA and ELA DL/I classes is enabled statewide by default.
-~~- Rostering for 4th or 5th grade ELA classes is enabled selectively by school code based on requests from the NCDPI Office of Early Learning.~~
-    ~~- Rostering for 4th or 5th grade ELA DL/I classes is enabled as a pilot for one PSU.~~
+- ~~Rostering for 4th or 5th grade ELA classes is enabled selectively by school code based on requests from the NCDPI Office of Early Learning.~~
+    - ~~Rostering for 4th or 5th grade ELA DL/I classes is enabled as a pilot for one PSU.~~
 - Effective in 2026-2027, rostering for 4-5 ELA is enabled statewide by default for LEAs. Charters are included via opt-in to the NCDPI Office of Early Learning.
 - Rostering for other Amplify products or for grade levels beyond K-5 is __not__ supported by this process. Please contact Amplify for additional rostering options.
 
