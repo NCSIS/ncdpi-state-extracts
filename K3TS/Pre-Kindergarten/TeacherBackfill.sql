@@ -52,7 +52,10 @@ select distinct
 		WHEN ea.k3TSAdminRole IS NULL then '1'
 		WHEN ea.k3TSAdminRole IS NOT NULL then '3'
 	END as 'userTypeID' --1 = teacher, 3 = admin
-	,ea.k3TSAdminRole as 'adminTypeID'
+	,CASE 
+		WHEN ea.k3TSAdminRole IS NULL then '0'
+		ELSE ea.k3TSAdminRole
+	END as 'adminTypeID'
 	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone,'5555555555'),'(',''),')',''),'-','') as 'phone'
 	,'3' as 'currTypeID'
 from dbo.District d
@@ -81,4 +84,5 @@ and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
 --and ea.k3TSAdminRole IS NOT NULL
 and c.email IS NOT NULL
-and i.staffStateID IS NOT NULL
+and ISNUMERIC(i.staffStateID)=1
+AND LEFT(i.staffStateID,1)>0
