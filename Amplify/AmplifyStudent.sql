@@ -2,6 +2,7 @@
 Script maintained by NCDPI, PSU Technology Systems Section.
 See https://github.com/NCSIS/ncdpi-state-extracts.
 **********************************************/
+DECLARE @asof datetime2 = SYSDATETIME();
 select 
 	 distinct CAST(d.number as varchar) + CASE WHEN RIGHT(scl.number,3) = '296' THEN CAST(RIGHT(ISNULL(cal.number,scl.number),3) as varchar) ELSE RIGHT(scl.number,3) END as 'Institution'
 	,stu.stateID as 'Primary Student ID'
@@ -10,9 +11,9 @@ select
 	,REPLACE(stu.middleName,',','') as 'Middle Name' 
 	,REPLACE(stu.Suffix,',','') as 'Suffix' 
 	,CASE --WHEN ar.personID IS NOT NULL THEN '3'
-		  WHEN gl.stateGrade like 'K%' THEN 'K'
-		  WHEN gl.stateGrade like '0%' THEN REPLACE(gl.stateGrade,'0','')
-		  ELSE gl.stateGrade END as 'Grade' 
+		  WHEN stu.stateGrade like 'K%' THEN 'K'
+		  WHEN stu.stateGrade like '0%' THEN REPLACE(stu.stateGrade,'0','')
+		  ELSE stu.stateGrade END as 'Grade' 
 	,FORMAT(stu.birthdate,'dd-MMM-yy') as 'Date of Birth (DOB)'
 	,COALESCE(stu.legalGender,stu.gender) as 'Gender' 
 	,REPLACE(sc.email,',','') as 'email'
@@ -42,19 +43,19 @@ cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calenda
 cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calendarID and dy.schoolDay = 1 order by date desc) dyl
 join dbo.School scl ON scl.schoolID = cal.schoolID
 join dbo.Student stu WITH(NOEXPAND) ON stu.calendarID = cal.calendarID
-join dbo.GradeLevel gl ON gl.calendarID = cal.calendarID and gl.name = stu.grade and gl.structureID = stu.structureID
 left outer join dbo.contact sc ON sc.personID = stu.personID and sc.districtID = d.districtID
+outer apply (select 1 as charter where ISNUMERIC(SUBSTRING(d.number,3,1)) = 0) psu_type
 outer apply (select top 1 personID
 				from dbo.section504 s
 				where s.personID = stu.personID
 				and s.districtID = d.districtID
-				and s.startDate <= getdate()
-				and (s.endDate IS NULL OR s.endDate >= getdate())
+				and s.startDate <= @asof
+				and (s.endDate IS NULL OR s.endDate >= @asof)
 				) s504
 outer apply (select top 1 personID
 				from dbo.Migrant m
-				where m.lastQualifyingArrivalDate <= getdate()
-				and (m.eligibilityExpirationDate IS NULL OR m.eligibilityExpirationDate >= getdate())
+				where m.lastQualifyingArrivalDate <= @asof
+				and (m.eligibilityExpirationDate IS NULL OR m.eligibilityExpirationDate >= @asof)
 				and m.personID = stu.personID
 				and m.districtID = stu.districtID
 				) mig
@@ -81,8 +82,8 @@ outer apply (select top 1
 				from dbo.SpecialEdState ses
 				where ses.personID = stu.personID
 				and ses.districtID = stu.districtID
-				and (ses.startDate <= getdate() OR ses.startDate IS NULL)
-				and (ses.endDate IS NULL OR ses.endDate >= getdate())
+				and (ses.startDate <= @asof OR ses.startDate IS NULL)
+				and (ses.endDate IS NULL OR ses.endDate >= @asof)
 				and (ses.exitReason IS NULL OR LTRIM(RTRIM(ses.exitReason)) = '')
 				order by ses.specialEDStateID asc) ses
 outer apply (select top 1 r.personID
@@ -90,8 +91,8 @@ outer apply (select top 1 r.personID
 				where r.personID = stu.personID
 				and r.districtID = stu.districtID
 				and r.[status] = 'RRET'
-				and r.startDate <= getdate()
-				and (r.endDate IS NULL OR r.endDate >= getdate())
+				and r.startDate <= @asof
+				and (r.endDate IS NULL OR r.endDate >= @asof)
 				and r.endYear = stu.endYear
 				and r.grade = '04'
 				) ar
@@ -104,36 +105,28 @@ and exists(select 1
 			join dbo.Section sec ON sec.trialID = trl.trialID
 			join dbo.Course crs ON crs.courseID = sec.courseID and crs.calendarID = cal.calendarID and crs.active = 1
 			join dbo.Roster ros ON ros.personID = stu.personID and ros.trialID = trl.trialID and ros.sectionID = sec.sectionID
-			and (ros.startDate IS NULL OR ros.startDate <= getdate() or getdate() < dy.date)
+			and (ros.startDate IS NULL OR ros.startDate <= @asof or @asof < dy.date)
 			and (
-				(ros.endDate IS NULL OR ros.endDate >= getdate() OR ros.endDate=dyl.date)
+				(ros.endDate IS NULL OR ros.endDate >= @asof OR ros.endDate=dyl.date)
 				)
 			and (
-				LEFT(crs.stateCode,4) IN('1050','1051','1052','1053')--,'1054','1055')
-				or crs.stateCode IN('11512Z0','11512Z1','11512Z2','11512Z3')
-				OR (ar.personID IS NOT NULL and LEFT(crs.stateCode,4) = '1054')
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054'))
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055'))
-				--OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade6 = 1) and LEFT(crs.stateCode,4) IN('1056'))
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and d.number='681' and crs.stateCode='11512Z4') --enable 4th DLI course for 681 enabled schools only
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and d.number='681' and crs.stateCode='11512Z5') --enable 5th DLI course for 681 enabled schools only
+				LEFT(crs.stateCode,4) IN('1050','1051','1052','1053') -- "regular" K-3 ELA for all
+				or crs.stateCode IN('11512Z0','11512Z1','11512Z2','11512Z3') -- "DL/I" K-3 ELA for all
+				or (psu_type.charter is null and LEFT(crs.stateCode,4) IN('1054','1055')) -- "regular" 4/5 ELA for LEAs
+				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054')) --opt-in "regular" 4 ELA for charters
+				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055')) --opt-in "regular" 5 ELA for charters
 				)
 			)
-and (stu.startDate <= getdate()
+and (stu.startDate <= @asof
 	or
-	getdate() < dy.date
+	@asof < dy.date
 	)
 and (
-	stu.endDate IS NULL OR stu.endDate >= getdate() OR stu.endDate=dyl.date
+	stu.endDate IS NULL OR stu.endDate >= @asof OR stu.endDate=dyl.date
 	)
 and stu.serviceType = 'P'
 and (RIGHT(scl.number,3) >= '300'
 	OR
-	ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
+	psu_type.charter=1
 	)
-and (gl.stateGrade IN('KG','01','02','03')
-	OR (ar.personID IS NOT NULL and gl.stateGrade = '04')
-	OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and gl.stateGrade = '04')
-	OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and gl.stateGrade = '05')
-	--OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade6 = 1) and gl.stateGrade = '06')
-	)
+and stu.stateGrade IN('KG','01','02','03','04','05')

@@ -2,6 +2,7 @@
 Script maintained by NCDPI, PSU Technology Systems Section.
 See https://github.com/NCSIS/ncdpi-state-extracts.
 **********************************************/
+DECLARE @asof datetime2 = SYSDATETIME();
 select distinct *
 from (select distinct 
 	 d.number + CASE WHEN RIGHT(scl.number,3) = '296' THEN RIGHT(ISNULL(cal.number,scl.number),3) 
@@ -28,13 +29,14 @@ join dbo.EmploymentAssignment ea ON ea.schoolID = scl.schoolID and ea.districtID
 join dbo.individual i ON i.personID = ea.personID
 outer apply (select top 1 * from dbo.StudentContact c where c.districtID = d.districtID and c.personID = i.personID and c.relationship = 'Self' and c.email IS NOT NULL order by contactID desc) c
 outer apply (select top 1 * from dbo.contact c where c.personID = i.personID and c.districtID = d.districtID) c2
+outer apply (select 1 as charter where ISNUMERIC(SUBSTRING(d.number,3,1)) = 0) psu_type
 where 1=1
-and ea.startDate <= getdate()
-and (ea.endDate IS NULL OR ea.endDate >= getdate())
+and ea.startDate <= @asof
+and (ea.endDate IS NULL OR ea.endDate >= @asof)
 and RIGHT(scl.number,3) <> '810'
 and (RIGHT(scl.number,3) >= '300'
 	OR
-	ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
+	psu_type.charter=1
 	)
 and exists(select 1
 			from dbo.trial trl 
@@ -43,13 +45,11 @@ and exists(select 1
 			join dbo.course crs ON crs.courseID = sec.courseID
 			where trl.calendarID = cal.calendarID
 			and (
-				LEFT(crs.stateCode,4) IN('1050','1051','1052','1053','1054','1055')
-				or crs.stateCode IN('11512Z0','11512Z1','11512Z2','11512Z3')
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054'))
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055'))
-				--OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade6 = 1) and LEFT(crs.stateCode,4) IN('1056'))
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and d.number='681' and crs.stateCode='11512Z4') --enable 4th DLI course for 681 enabled schools only
-				OR (exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and d.number='681' and crs.stateCode='11512Z5') --enable 5th DLI course for 681 enabled schools only
+				LEFT(crs.stateCode,4) IN('1050','1051','1052','1053') -- "regular" K-3 ELA for all
+				or crs.stateCode IN('11512Z0','11512Z1','11512Z2','11512Z3') -- "DL/I" K-3 ELA for all
+				or (psu_type.charter is null and LEFT(crs.stateCode,4) IN('1054','1055')) -- "regular" 4/5 ELA for LEAs
+				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054')) --opt-in "regular" 4 ELA for charters
+				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055')) --opt-in "regular" 5 ELA for charters
 				)
 			)
 
@@ -76,13 +76,14 @@ join dbo.EmploymentAssignment ea ON ea.schoolID = scl.schoolID and ea.districtID
 join dbo.individual i ON i.personID = ea.personID
 outer apply (select top 1 * from dbo.StudentContact c where c.districtID = d.districtID and c.personID = i.personID and c.relationship = 'Self' and c.email IS NOT NULL order by contactID desc) c
 outer apply (select top 1 * from dbo.contact c where c.personID = i.personID and c.districtID = d.districtID) c2
+outer apply (select 1 as charter where ISNUMERIC(SUBSTRING(d.number,3,1)) = 0) psu_type
 where 1=1
-and ea.startDate <= getdate()
-and (ea.endDate IS NULL OR ea.endDate >= getdate())
+and ea.startDate <= @asof
+and (ea.endDate IS NULL OR ea.endDate >= @asof)
 and RIGHT(scl.number,3) <> '810'
 and (RIGHT(scl.number,3) >= '300'
 	OR
-	ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
+	psu_type.charter=1
 	)
 and ea.amplifyRole IS NOT NULL
 
@@ -107,8 +108,8 @@ join dbo.individual i ON i.personID = ea.personID
 outer apply (select top 1 * from dbo.StudentContact c where c.districtID = d.districtID and c.personID = i.personID and c.relationship = 'Self' and c.email IS NOT NULL order by contactID desc) c
 outer apply (select top 1 * from dbo.contact c where c.personID = i.personID and c.districtID = d.districtID) c2
 where 1=1
-and ea.startDate <= getdate()
-and (ea.endDate IS NULL OR ea.endDate >= getdate())
+and ea.startDate <= @asof
+and (ea.endDate IS NULL OR ea.endDate >= @asof)
 and (RIGHT(scl.number,3) = '810')
 and ea.amplifyRole IS NOT NULL
 and ea.amplifyRole IN('RTA-A','RTA-S')
