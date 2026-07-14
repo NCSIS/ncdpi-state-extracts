@@ -34,7 +34,7 @@ and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
 and c.email IS NOT NULL
 and i.staffStateID IS NOT NULL
-
+/*
 UNION ALL
 
 --anyone with principal in the title for admins
@@ -64,19 +64,20 @@ where 1=1
 and ISNUMERIC(d.number) = 1
 and ea.startDate <= getdate()
 and (ea.endDate IS NULL OR ea.endDate >= getdate())
-and (
-	exists(select 1
+and exists(select 1
 			from dbo.Course crs
 			where crs.calendarID = cal.calendarID
 			and crs.stateCode ='99329P0' --only PK Courses
 			and crs.active = 1
 			)
-	--or exists(
-		--select 1 from GradeLevel where stateGrade in ('IT','PR','PK') and GradeLevel.calendarID=cal.calendarID
-	--)
-)
+and not exists(select 1
+			from dbo.Course crs
+			where crs.calendarID = cal.calendarID
+			and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0') --only KG ELA courses --JBM updated 11/18/25, remove course 1001 per Dan Tetreault
+			)
 and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
 and ea.k3TSAdminRole IS NOT NULL
 and c.email IS NOT NULL
 and i.staffStateID IS NOT NULL
+*/
