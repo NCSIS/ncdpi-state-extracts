@@ -6,7 +6,7 @@ select distinct
 	 d.number + LEFT(crs.number,4) + '-' + CAST(sec.sectionID as varchar) as 'sourceClassID'
 	,d.number as 'SourceProgramID'
 	,i.staffStateID as 'sourceUserID'
-	,i.lastName as 'name'
+	,i.lastName+'-'+CAST(sec.number as VARCHAR) as 'name'
 	,'5' as 'colorIDList' --hard coded 5 for PK
 	,'2' as 'CurrTypeID' --hard coded 2 for PK
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.staffStateID ELSE '' END) as SectionTeacher2ID
@@ -42,4 +42,4 @@ and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(s.number) = 1
 --and RIGHT(s.number,3) >= '300'
-group by sec.sectionID,i.staffStateID,i.lastName,d.number,s.number,cal.number,crs.number
+group by sec.sectionID,i.staffStateID,i.lastName,sec.number,d.number,s.number,cal.number,crs.number
