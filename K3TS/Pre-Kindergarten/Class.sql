@@ -37,6 +37,7 @@ outer apply (select top 5 i2.staffStateID,i2.firstname + ' ' + i2.lastname as te
 			) ssh2
 where 1=1
 and ssh.staffType = 'P'
+and d.number<>'920'
 and ISNUMERIC(d.number) = 1
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())

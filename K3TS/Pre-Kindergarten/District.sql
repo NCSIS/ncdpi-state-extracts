@@ -12,6 +12,7 @@ select d.number as 'sourceProgramID'
 	,REPLACE(REPLACE(REPLACE(REPLACE(COALESCE(d.phone,'5555555555'),'(',''),')',''),'-',''),' ','') as 'phone'
 from dbo.District d
 where 1=1
+and d.number<>'920'
 and ISNUMERIC(d.number) = 1
 and exists(select 1 
 			from dbo.calendar cal 

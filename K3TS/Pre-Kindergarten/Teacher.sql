@@ -31,6 +31,7 @@ where 1=1
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(s.number) = 1
+and d.number<>'920'
 --and RIGHT(s.number,3) >= '300'
 and c.email IS NOT NULL
 and i.staffStateID IS NOT NULL

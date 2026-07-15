@@ -131,6 +131,7 @@ and (stu.startDate <= getdate()
 and (
 	(stu.endDate IS NULL OR stu.endDate >= getdate())
 	)
+and d.number<>'920'
 and ISNUMERIC(s.number) = 1
 and ISNUMERIC(d.number) = 1
 --and (RIGHT(s.number,3) >= '300')

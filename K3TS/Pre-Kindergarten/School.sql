@@ -21,6 +21,7 @@ join dbo.School s ON s.districtID = d.districtID
 join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 where 1=1
+and d.number<>'920'
 and ISNUMERIC(d.number) = 1
 and (
 	exists(
