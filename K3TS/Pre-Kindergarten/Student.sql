@@ -132,9 +132,7 @@ and (
 	(stu.endDate IS NULL OR stu.endDate >= getdate())
 	)
 and d.number<>'920'
-and ISNUMERIC(s.number) = 1
 and ISNUMERIC(d.number) = 1
---and (RIGHT(s.number,3) >= '300')
 and stu.stateID > '1000000000';
 
 IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
