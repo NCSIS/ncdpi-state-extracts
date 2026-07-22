@@ -26,11 +26,8 @@ where 1=1
 --and ssh.staffType = 'P'
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
-and ISNUMERIC(s.number) = 1
-and (RIGHT(s.number,3) >= '300'
-	OR
-	ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
-	)
+and ISNUMERIC(d.number) = 1
+and RIGHT(s.number,3) >= '300'
 and c.email IS NOT NULL
 and i.staffStateID IS NOT NULL
 
@@ -74,11 +71,8 @@ and (exists(select 1
 			and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0') --only KG ELA courses --JBM updated 11/18/25, remove course 1001 per Dan Tetreault
 			)
 	or RIGHT(s.number,3)='810')
-and ISNUMERIC(s.number) = 1
-and (RIGHT(s.number,3) >= '300'
-	--OR
-	--ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
-	)
+and ISNUMERIC(d.number) = 1
+and RIGHT(s.number,3) >= '300'
 and ea.k3TSAdminRole IS NOT NULL
 and c.email IS NOT NULL
 and i.staffStateID IS NOT NULL

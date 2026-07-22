@@ -25,8 +25,4 @@ and exists(
 			and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0') --only KG ELA courses --JBM updated 11/18/25, remove course 1001 per Dan Tetreault
 			and crs.active = 1
 			)
-and (RIGHT(s.number,3) >= '300'
-	--OR
-	--ISNUMERIC(SUBSTRING(d.number,3,1)) = 0
-	)
-	
+and RIGHT(s.number,3) >= '300'
