@@ -133,6 +133,6 @@ and (
 	)
 and d.number<>'920'
 and ISNUMERIC(d.number) = 1
-and stu.stateID > '1000000000';
+and LEN(stu.stateID)=10;
 
 IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
