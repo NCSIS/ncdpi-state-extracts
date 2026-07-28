@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 stu.stateID as 'sourceChildID'
 	,d.number + LEFT(crs.number,4) + '-' + CAST(crs.sectionID as varchar) as 'sourceClassID'
@@ -108,7 +112,6 @@ and (stu.startDate <= getdate()
 and (
 	(stu.endDate IS NULL OR stu.endDate >= getdate())
 	)
-/*9/10/2025 MAY be changing below when PK, 1, 2, 3 grades are added*/
 and ISNUMERIC(d.number) = 1
 and RIGHT(s.number,3) >= '300'
 and stu.stateID IS NOT NULL
