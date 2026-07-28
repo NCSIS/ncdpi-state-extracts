@@ -1,8 +1,12 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 d.number + LEFT(crs.number,4) + '-' + CAST(sec.sectionID as varchar) as 'sourceClassID'
 	,i.staffStateID as 'sourceUserID'
 	,i.lastName+'-'+CAST(sec.number as VARCHAR) as 'name'
-	,'6' as 'gradeLevelList' --hard coded - do i need to look up students in class?
+	,'6' as 'gradeLevelList'
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.staffStateID ELSE '' END) as SectionTeacher2ID
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.teacherName ELSE '' END) as Teacher2CoTeacher_FL
 	,MAX(CASE WHEN ssh2.rn = 2 THEN ssh2.staffStateID ELSE '' END) as SectionTeacher3ID
@@ -18,7 +22,7 @@ join dbo.School s ON s.districtID = d.districtID
 join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
-join dbo.Course crs ON crs.calendarID = cal.calendarID and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0') --only KG ELA courses --JBM updated 11/18/25, remove course 1001 per Dan Tetreault
+join dbo.Course crs ON crs.calendarID = cal.calendarID and (LEFT(crs.stateCode,4) IN('1050') OR crs.stateCode = '11512Z0')
 join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
@@ -28,6 +32,7 @@ outer apply (select top 5 i2.staffStateID,i2.firstname + ' ' + i2.lastname as te
 			where ssh2.sectionID = sec.sectionID
 			and ssh2.trialID = trl.trialID
 			and ssh2.staffType <> 'P'
+			and LEN(i2.staffStateID) = 10
 			) ssh2
 where 1=1
 and ssh.staffType = 'P'
@@ -36,4 +41,5 @@ and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(d.number) = 1
 and RIGHT(s.number,3) >= '300'
+and LEN(i.staffStateID) = 10
 group by sec.sectionID,i.staffStateID,i.lastName,sec.number,d.number,s.number,cal.number,crs.number

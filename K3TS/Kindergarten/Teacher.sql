@@ -1,3 +1,7 @@
+/**********************************************
+Script maintained by NCDPI, PSU Technology Systems Section.
+See https://github.com/NCSIS/ncdpi-state-extracts.
+**********************************************/
 select distinct
 	 i.staffStateID as 'sourceUserID'
 	,CASE WHEN s.number = '296' THEN d.number + ISNULL(cal.number,s.number)
@@ -7,7 +11,7 @@ select distinct
 	,i.lastName as 'lastName'
 	,i.firstName as 'firstName'
 	,i.staffStateID as 'username'
-	,c.email as 'email'
+	,COALESCE(c.email,i.staffStateID+'@'+d.number+'.ncsis.gov') as 'email'
 	,'1' as 'userTypeID' --1 = teacher, 3 = admin
 	,'0' as 'adminTypeID' -- always 0 unless userTypeID is 3
 	,REPLACE(REPLACE(REPLACE(COALESCE(c.workPhone,c.cellPhone,'5555555555'),'(',''),')',''),'-','') as 'phone'
@@ -28,8 +32,7 @@ and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
 and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
 and ISNUMERIC(d.number) = 1
 and RIGHT(s.number,3) >= '300'
-and c.email IS NOT NULL
-and i.staffStateID IS NOT NULL
+and LEN(i.staffStateID) = 10
 
 UNION ALL
 
@@ -45,7 +48,7 @@ select distinct
 	,i.lastName as 'lastName'
 	,i.firstName as 'firstName'
 	,i.staffStateID as 'username'
-	,c.email as 'email'
+	,COALESCE(c.email,i.staffStateID+'@'+d.number+'.ncsis.gov') as 'email'
 	,'3' as 'userTypeID' --1 = teacher, 3 = admin
 	--,eav.value as 'adminTypeID' --is this correct for teachers?
 	,ea.k3TSAdminRole as 'adminTypeID' --is this correct for teachers?
@@ -74,5 +77,4 @@ and (exists(select 1
 and ISNUMERIC(d.number) = 1
 and RIGHT(s.number,3) >= '300'
 and ea.k3TSAdminRole IS NOT NULL
-and c.email IS NOT NULL
-and i.staffStateID IS NOT NULL
+and LEN(i.staffStateID) = 10
