@@ -47,3 +47,22 @@ WHERE
     AND c.[email] IS NOT NULL --email populated
     AND sm.[startDate] <= (getdate()+1) --start date is tomorrow or prior
     AND (sm.[endDate] IS NULL OR sm.[endDate] >= (getdate()+1)) --end date is null or future as of tomorrow
+
+UNION ALL
+
+SELECT DISTINCT
+    STAFF_UID,
+    SCHOOL_CODE,
+    EMAIL,
+    EMAIL as ALIAS_ID
+from cust.ncdpiIAMAdditionalPeople
+where 1=1;
+
+/*
+Create table for addtl inserted emails...
+CREATE TABLE cust.ncdpiIAMAdditionalPeople(
+  STAFF_UID varchar(10) NOT NULL,
+  SCHOOL_CODE   varchar(6)  NOT NULL,
+  EMAIL varchar(100)    NOT NULL
+);
+*/
