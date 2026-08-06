@@ -2,6 +2,7 @@
 Script maintained by NCDPI, PSU Technology Systems Section.
 See https://github.com/NCSIS/ncdpi-state-extracts.
 **********************************************/
+DECLARE @asof datetime2 = SYSDATETIME();
 select distinct
 	 d.number + LEFT(crs.number,4) + '-' + CAST(sec.sectionID as varchar) as 'sourceClassID'
 	,d.number as 'SourceProgramID'
@@ -28,18 +29,22 @@ join dbo.Course crs ON crs.calendarID = cal.calendarID and crs.stateCode ='99329
 join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
+OUTER APPLY (select top 1 startDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.startDate asc) sterm --find startDate of first term for the year
+OUTER APPLY (select top 1 endDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.endDate desc) eterm --find endDate of last term for the year
 outer apply (select top 5 i2.staffStateID,i2.firstname + ' ' + i2.lastname as teacherName,ROW_NUMBER() OVER(PARTITION BY ssh2.sectionID ORDER BY ssh2.personID asc) rn
 			from dbo.SectionStaffHistory ssh2 
 			join dbo.individual i2 ON i2.personID = ssh2.personID
 			where ssh2.sectionID = sec.sectionID
 			and ssh2.trialID = trl.trialID
 			and ssh2.staffType <> 'P'
+			and (ssh2.startDate IS NULL OR ssh2.startDate <= @asof or @asof < sterm.startDate)
+			and (ssh2.endDate IS NULL OR ssh2.endDate >= @asof OR ssh2.endDate=eterm.endDate)
 			) ssh2
 where 1=1
 and ssh.staffType = 'P'
 and d.number<>'920'
 and ISNUMERIC(d.number) = 1
-and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
-and (ssh.endDate IS NULL OR ssh.endDate >= getdate())
+and (ssh.startDate IS NULL OR ssh.startDate <= @asof or @asof < sterm.startDate)
+and (ssh.endDate IS NULL OR ssh.endDate >= @asof OR ssh.endDate=eterm.endDate)
 and LEN(i.staffStateID) = 10
 group by sec.sectionID,i.staffStateID,i.lastName,sec.number,d.number,s.number,cal.number,crs.number
