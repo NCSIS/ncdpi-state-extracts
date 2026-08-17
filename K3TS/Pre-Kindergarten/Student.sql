@@ -107,7 +107,7 @@ join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.student stu WITH(NOEXPAND) ON stu.calendarID = cal.calendarID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
 join #PKTScounties ON d.number=#PKTScounties.LEA_CODE
-OUTER APPLY (select top 1 startDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.startDate asc) sterm --find startDate of first term for the year
+--OUTER APPLY (select top 1 startDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.startDate asc) sterm --find startDate of first term for the year
 OUTER APPLY (select top 1 endDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.endDate desc) eterm --find endDate of last term for the year
 cross apply (select top 1 crs.number,sec.sectionID
 			from dbo.Course crs 
@@ -121,15 +121,15 @@ cross apply (select top 1 crs.number,sec.sectionID
 						) ros
 				where crs.calendarID = cal.calendarID 
 				and crs.stateCode ='99329P0' --only PK Courses
-				and (ros.startDate IS NULL OR ros.startDate <= @asof OR @asof<sterm.startDate)
+				--and (ros.startDate IS NULL OR ros.startDate <= @asof OR @asof<sterm.startDate)
 				and (ros.endDate IS NULL OR ros.endDate >= @asof OR ros.endDate=eterm.endDate)
 			) crs
 outer apply (select 1 as bool from EarlyLearningEnrollmentType join EarlyLearning on EarlyLearning.earlyLearningID=EarlyLearningEnrollmentType.earlyLearningID where EarlyLearning.personID=stu.personID and EarlyLearning.districtID=stu.districtID and value=6) eLNCPK --is student NC Pre-K?
 outer apply (select 1 as bool from EarlyLearningEnrollmentType join EarlyLearning on EarlyLearning.earlyLearningID=EarlyLearningEnrollmentType.earlyLearningID where EarlyLearning.personID=stu.personID and EarlyLearning.districtID=stu.districtID and value=4) eLHS --is student Head Start?
 where 1=1
-and (stu.startDate <= @asof
+/*and (stu.startDate <= @asof
 	or @asof < sterm.startDate
-	)
+	)*/ --JM updated 8/17/26. PK starts may not follow Terms in all cases. And we just care it's not ended. Start date doesn't really matter.
 and (
 	(stu.endDate IS NULL
 	OR stu.endDate >= @asof
@@ -137,6 +137,6 @@ and (
 	)
 and d.number<>'920'
 and ISNUMERIC(d.number) = 1
-and LEN(stu.stateID)=10;
+and LEN(stu.stateID)=10
 
 IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
