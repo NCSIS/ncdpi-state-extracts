@@ -27,11 +27,12 @@ select distinct
 		  ELSE '43' --unknown
 	 END as 'RaceID'
 	,CASE WHEN ISNULL(stu.hispanicEthnicity,'N') = 'Y' THEN '23' ELSE '1' END as 'EthID'
-	,CASE stu.stateGrade
+	/*,CASE stu.stateGrade
 		WHEN 'IT' then '4'
 		WHEN 'PR' then '4'
 		WHEN 'PK' then '5'
-	END as 'ColorID' 
+	END as 'ColorID' */
+	,'5' as 'ColorID' --specs say hardcode 5, not differ on grade level
 	,'0' as 'SpanishObj_fl' --specs say hardcode 0
 	,stu.lastName as 'LastName'
 	,stu.firstName as 'FirstName'
