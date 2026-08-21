@@ -17,8 +17,8 @@ join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
 join dbo.Section sec ON sec.trialID = trl.trialID
 join dbo.Course crs ON crs.courseID = sec.courseID and crs.calendarID = cal.calendarID and crs.active = 1
 join dbo.Roster ros ON ros.personID = stu.personID and ros.trialID = trl.trialID and ros.sectionID = sec.sectionID
-cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calendarID and dy.schoolDay = 1 order by date asc) dy
-cross apply (select top 1 date from dbo.day dy where dy.calendarID = cal.calendarID and dy.schoolDay = 1 order by date desc) dyl
+cross apply (select top 1 startDate as 'date' from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=stu.structureID order by Term.endDate asc) dy
+cross apply (select top 1 endDate as 'date' from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=stu.structureID order by Term.endDate desc) dyl
 outer apply (select 1 as charter where ISNUMERIC(SUBSTRING(d.number,3,1)) = 0) psu_type
 outer apply (select top 1 r.personID
 				from dbo.AtRisk r
@@ -48,7 +48,8 @@ and (
 	LEFT(crs.stateCode,4) IN('1050','1051','1052','1053') -- "regular" K-3 ELA for all
 	or crs.stateCode IN('11512Z0','11512Z1','11512Z2','11512Z3') -- "DL/I" K-3 ELA for all
 	or (psu_type.charter is null and LEFT(crs.stateCode,4) IN('1054','1055')) -- "regular" 4/5 ELA for LEAs
+	or (psu_type.charter is null and crs.stateCode IN('11512Z4','11512Z5')) -- "DL/I" 4/5 ELA for LEAs
 	OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054')) --opt-in "regular" 4 ELA for charters
 	OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055')) --opt-in "regular" 5 ELA for charters
 	)
-and stu.stateGrade IN('KG','01','02','03','04','05')
+and stu.stateGrade IN('KG','01','02','03','04','05');
