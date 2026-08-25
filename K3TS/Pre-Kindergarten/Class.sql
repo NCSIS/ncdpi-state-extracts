@@ -8,7 +8,7 @@ select distinct
 	,d.number as 'SourceProgramID'
 	,i.staffStateID as 'sourceUserID'
 	,i.lastName+'-'+CAST(sec.number as VARCHAR) as 'name'
-	,'5' as 'colorIDList' --hard coded 5 for PK
+	,'4,5' as 'colorIDList' --hard coded 4,5 for PK
 	,'2' as 'CurrTypeID' --hard coded 2 for PK
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.staffStateID ELSE '' END) as SectionTeacher2ID
 	,MAX(CASE WHEN ssh2.rn = 1 THEN ssh2.teacherName ELSE '' END) as Teacher2CoTeacher_FL
