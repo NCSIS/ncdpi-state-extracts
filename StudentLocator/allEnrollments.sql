@@ -37,4 +37,4 @@ WHERE
 	AND i.identityId = p.currentIdentityID
 	AND s.schoolId = c.schoolId
 	AND d.districtId=s.districtID
-	AND d.number<>'998';
+	AND d.number not in ('997','998');
