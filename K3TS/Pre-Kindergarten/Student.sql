@@ -3,6 +3,7 @@ Script maintained by NCDPI, PSU Technology Systems Section.
 See https://github.com/NCSIS/ncdpi-state-extracts.
 **********************************************/
 DECLARE @asof datetime2 = SYSDATETIME();
+DECLARE @ageCutoff date = (select DATEFROMPARTS(startYear,8,31) from SchoolYear where active=1);
 
 IF OBJECT_ID('tempdb..#PKTScounties') IS NOT NULL DROP TABLE #PKTScounties;
 CREATE TABLE #PKTScounties(
@@ -27,11 +28,15 @@ select distinct
 		  ELSE '43' --unknown
 	 END as 'RaceID'
 	,CASE WHEN ISNULL(stu.hispanicEthnicity,'N') = 'Y' THEN '23' ELSE '1' END as 'EthID'
-	,CASE stu.stateGrade
+	/*CASE stu.stateGrade
 		WHEN 'IT' then '4'
 		WHEN 'PR' then '4'
 		WHEN 'PK' then '5'
-	END as 'ColorID'
+	END as 'ColorID'*/
+	,CASE
+		WHEN DATEDIFF(year,stu.birthdate,@ageCutoff)>=4 THEN '5'
+		ELSE '4'
+	END as 'ColorID' --set to 5 if student is 4 years old by cutoff date. Else, set to 4.
 	,'0' as 'SpanishObj_fl' --specs say hardcode 0
 	,stu.lastName as 'LastName'
 	,stu.firstName as 'FirstName'
