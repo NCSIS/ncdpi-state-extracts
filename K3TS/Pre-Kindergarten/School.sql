@@ -24,22 +24,20 @@ where 1=1
 and d.number<>'920'
 and ISNUMERIC(d.number) = 1
 and (
-	exists(
+	exists( 
 			select 1
-			from dbo.Course crs
-			where crs.calendarID = cal.calendarID
-			and crs.stateCode = '99329P0' --only PK Courses
-			and crs.active = 1
-			) --"schools using this course code"
+			from dbo.Section sec
+			join dbo.Trial trl on sec.trialID=trl.trialID and trl.active=1
+			join dbo.Course crs on sec.courseID=crs.courseID
+			where
+			crs.stateCode='99329P0'
+			and trl.calendarID=cal.calendarID
+			) --"schools with sections of this course"
 	or exists(
-		select 1 from GradeLevel where stateGrade in ('IT','PR','PK') and GradeLevel.calendarID=cal.calendarID
-	) --"schools with PreK grade level per EDDIE"
+		select 1
+		from dbo.student
+		where
+		student.stateGrade in ('PR','PK','IT')
+		and student.calendarID=cal.calendarID
+		) --"schools with PK enrolls"
 )
-/*and exists(
-	select 1 from GradeLevel where stateGrade in ('IT','PR','PK') and GradeLevel.calendarID=cal.calendarID
-) */ --3538 "schools that say they have PreK"
-/* and exists(
-	select top 1 personID from Student where stateGrade in ('IT','PR','PK') and calendarID=cal.calendarID
-) */ --1273 "schools that actually have PreK students"
---and RIGHT(s.number,3) >= '300'
-	
