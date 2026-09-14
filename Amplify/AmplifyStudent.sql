@@ -116,6 +116,7 @@ and exists(select 1
 				or (psu_type.charter is null and crs.stateCode IN('11512Z4','11512Z5')) -- "DL/I" 4/5 ELA for LEAs
 				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade4 = 1) and LEFT(crs.stateCode,4) IN('1054')) --opt-in "regular" 4 ELA for charters
 				OR (psu_type.charter=1 and exists(select 1 from cust.ncdpi_amplify_456_schools s2 where s2.schoolNumber = scl.number and grade5 = 1) and LEFT(crs.stateCode,4) IN('1055')) --opt-in "regular" 5 ELA for charters
+				OR (psu_type.charter=1 and ar.personID IS NOT NULL and LEFT(crs.stateCode,4) = '1054') -- RRET 4ths in charters not captured above
 				)
 			)
 and (stu.startDate <= @asof
