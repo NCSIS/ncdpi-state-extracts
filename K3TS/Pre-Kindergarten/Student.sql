@@ -18,13 +18,12 @@ select distinct
 	 stu.stateID as 'sourceChildID'
 	,d.number + LEFT(crs.number,4) + '-' + CAST(crs.sectionID as varchar) as 'sourceClassID'
 	,FORMAT(stu.birthDate,'yyyy-MM-dd') as 'Birthdate'
-	,CASE WHEN stu.raceEthnicityFed = 1 THEN '38' --Hispanic
-		  WHEN stu.raceEthnicityFed = 2 THEN '37' --American Indian
-		  WHEN stu.raceEthnicityFed = 3 THEN '45' --Asian
-		  WHEN stu.raceEthnicityFed = 4 THEN '2' --Black
-		  WHEN stu.raceEthnicityFed = 5 THEN '23' --Hawaiian
-		  WHEN stu.raceEthnicityFed = 6 THEN '1' --White
-		  WHEN stu.raceEthnicityFed = 7 THEN '44' --two or more
+	,CASE WHEN sre.[raceID] = '1' THEN '37' --American Indian
+		  WHEN sre.[raceID] = '2' THEN '45' --Asian
+		  WHEN sre.[raceID] = '3' THEN '2' --Black
+		  WHEN sre.[raceID] = '5' THEN '23' --Hawaiian
+		  WHEN sre.[raceID] = '6' THEN '1' --White
+		  WHEN sre.[raceID] like '%|%' THEN '44' --two or more
 		  ELSE '43' --unknown
 	 END as 'RaceID'
 	,CASE WHEN ISNULL(stu.hispanicEthnicity,'N') = 'Y' THEN '23' ELSE '1' END as 'EthID'
@@ -112,6 +111,7 @@ join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.student stu WITH(NOEXPAND) ON stu.calendarID = cal.calendarID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
 join #PKTScounties ON d.number=#PKTScounties.LEA_CODE
+CROSS APPLY (select string_agg([IdentityRaceEthnicity].raceID,'|') as raceID from [IdentityRaceEthnicity] where [IdentityRaceEthnicity].identityID=stu.identityID) sre
 --OUTER APPLY (select top 1 startDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.startDate asc) sterm --find startDate of first term for the year
 OUTER APPLY (select top 1 endDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.endDate desc) eterm --find endDate of last term for the year
 cross apply (select top 1 crs.number,sec.sectionID

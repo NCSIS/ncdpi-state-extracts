@@ -6,13 +6,12 @@ select distinct
 	 stu.stateID as 'sourceChildID'
 	,d.number + LEFT(crs.number,4) + '-' + CAST(crs.sectionID as varchar) as 'sourceClassID'
 	,FORMAT(stu.birthDate,'yyyy-MM-dd') as 'Birthdate'
-	,CASE WHEN stu.raceEthnicityFed = 1 THEN '38' --Hispanic
-		  WHEN stu.raceEthnicityFed = 2 THEN '37' --American Indian
-		  WHEN stu.raceEthnicityFed = 3 THEN '45' --Asian
-		  WHEN stu.raceEthnicityFed = 4 THEN '2' --Black
-		  WHEN stu.raceEthnicityFed = 5 THEN '23' --Hawaiian
-		  WHEN stu.raceEthnicityFed = 6 THEN '1' --White
-		  WHEN stu.raceEthnicityFed = 7 THEN '44' --two or more
+	,CASE WHEN sre.[raceID] = '1' THEN '37' --American Indian
+		  WHEN sre.[raceID] = '2' THEN '45' --Asian
+		  WHEN sre.[raceID] = '3' THEN '2' --Black
+		  WHEN sre.[raceID] = '5' THEN '23' --Hawaiian
+		  WHEN sre.[raceID] = '6' THEN '1' --White
+		  WHEN sre.[raceID] like '%|%' THEN '44' --two or more
 		  ELSE '43' --unknown
 	 END as 'RaceID'
 	,CASE WHEN ISNULL(stu.hispanicEthnicity,'N') = 'Y' THEN '23' ELSE '1' END as 'EthID'
@@ -87,6 +86,7 @@ join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.student stu WITH(NOEXPAND) ON stu.calendarID = cal.calendarID
 join dbo.Trial trl ON trl.calendarID = cal.calendarID and trl.active = 1
+CROSS APPLY (select string_agg([IdentityRaceEthnicity].raceID,'|') as raceID from [IdentityRaceEthnicity] where [IdentityRaceEthnicity].identityID=stu.identityID) sre
 /*changed below cross apply on 9/10/2025 to get top 1 - 1050, 1001 or 1151 - only send ONE record in this order*/
 cross apply (select top 1 crs.number,sec.sectionID
 			from dbo.Course crs 
