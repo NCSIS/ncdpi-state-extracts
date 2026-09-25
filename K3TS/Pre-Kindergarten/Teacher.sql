@@ -26,7 +26,7 @@ join dbo.Course crs ON crs.calendarID = cal.calendarID and crs.stateCode ='99329
 join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
-join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID
+left join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID
 OUTER APPLY (select top 1 startDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.startDate asc) sterm --find startDate of first term for the year
 OUTER APPLY (select top 1 endDate from Term join TermSchedule on TermSchedule.termScheduleID=Term.termScheduleID where TermSchedule.structureID=trl.structureID order by Term.endDate desc) eterm --find endDate of last term for the year
 where 1=1

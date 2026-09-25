@@ -25,7 +25,7 @@ join dbo.Course crs ON crs.calendarID = cal.calendarID and (LEFT(crs.stateCode,4
 join dbo.Section sec ON sec.trialID = trl.trialID and sec.courseID = crs.courseID
 join dbo.SectionStaffHistory ssh ON ssh.trialID = trl.trialID and ssh.sectionID = sec.sectionID
 join dbo.Individual i ON i.personID = ssh.personID
-join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID --JBM updated 11/10/25, more reliable.
+left join dbo.Contact c ON c.personID = ssh.personID and c.districtID = d.districtID --JBM updated 11/10/25, more reliable.
 where 1=1
 --and ssh.staffType = 'P'
 and (ssh.startDate IS NULL OR ssh.startDate <= getdate())
@@ -60,7 +60,7 @@ join dbo.SchoolYear sy ON sy.active = 1
 join dbo.Calendar cal ON cal.endYear = sy.endYear and cal.schoolID = s.schoolID
 join dbo.EmploymentAssignment ea ON ea.schoolID = s.schoolID --and ISNULL(ea.title,'') = 'Principal'
 join dbo.Individual i ON i.personID = ea.personID
-join dbo.Contact c ON c.personID = i.personID and c.districtID = d.districtID --JBM updated 11/10/25, more reliable.
+left join dbo.Contact c ON c.personID = i.personID and c.districtID = d.districtID --JBM updated 11/10/25, more reliable.
 --outer apply (select top 1 * from dbo.StudentContact c where c.districtID= d.districtID and c.email IS NOT NULL and c.personID = i.personID and c.relationship = 'Self' order by contactID desc) c
 --join dbo.CampusAttribute ca ON ca.object = 'Employment Assignment' and ca.element = 'k3TSAdminRole'
 --join dbo.EmploymentAssignmentValue eav ON eav.assignmentID = ea.assignmentID and eav.attributeID = ca.attributeID
