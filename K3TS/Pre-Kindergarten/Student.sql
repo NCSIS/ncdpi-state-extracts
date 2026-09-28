@@ -33,7 +33,7 @@ select distinct
 		WHEN 'PK' then '5'
 	END as 'ColorID'*/
 	,CASE
-		WHEN DATEDIFF(year,stu.birthdate,@ageCutoff)>=4 THEN '5'
+		WHEN DATEDIFF(year,stu.birthdate,@ageCutoff) - CASE WHEN DATEADD(year,DATEDIFF(year,stu.birthdate,@agecutoff),stu.birthdate) > @ageCutoff then 1 else 0 end >=4 THEN '5'
 		ELSE '4'
 	END as 'ColorID' --set to 5 if student is 4 years old by cutoff date. Else, set to 4.
 	,'0' as 'SpanishObj_fl' --specs say hardcode 0
